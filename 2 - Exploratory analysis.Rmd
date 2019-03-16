@@ -1,0 +1,41 @@
+---
+title: "Try feather format"
+author: "Julian Barg"
+date: "March 16, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Read feather
+```{r read}
+library(feather)
+sample <- read_feather('sample 2019-03-16.feather')
+```
+
+## Explore data
+How many year-executive observations do we have per company?
+
+```{r year-executive}
+library(tidyverse)
+
+sample %>%
+  group_by(gvkey) %>%
+  summarize(n = n()) %>%
+  ggplot(aes(x=n)) +
+  geom_histogram() +
+  labs(title='Histogram of number of observations (year-executive) per company')
+```
+
+What's the tenure of the executives?
+```{r tenure}
+sample %>%
+  group_by(execid) %>%
+  summarize(n = n()) %>%
+  ggplot(aes(x=n)) +
+  geom_bar() +
+  labs(title='Histogram of tenure of executives') +
+  scale_x_continuous(breaks = seq(0, 10, by=1))
+```
