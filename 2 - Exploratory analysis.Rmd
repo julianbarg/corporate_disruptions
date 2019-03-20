@@ -2,7 +2,9 @@
 title: "Try feather format"
 author: "Julian Barg"
 date: "March 16, 2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -38,4 +40,13 @@ sample %>%
   geom_bar() +
   labs(title='Histogram of tenure of executives') +
   scale_x_continuous(breaks = seq(0, 10, by=1))
+```
+
+How many observations are there for every year? Are observations more complete for recent years?
+```{r time_trend}
+sample %>%
+  ggplot(aes(x=year)) +
+  geom_bar() +
+    labs(title='Observations (executives) per year') +
+  scale_x_continuous(breaks = seq(2009, 2018, by=1))
 ```
