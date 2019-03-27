@@ -1,0 +1,120 @@
+---
+title: "Temporality and disruption of routines"
+author: "Julian Barg"
+date: "March 27, 2019"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(lubridate)
+library(feather)
+```
+
+## 1. Temporality literature
+
+Identified as import issue in many research streams:
+
+> - Temporality and sustainability (Bansal & DesJardine 2014)
+> - Agent's temporal orientation (Wowak et al. 2015)
+> - Decision speed (Kwnatzki et al. 2013)
+
+## 2. Researching "pace"
+
+> - At what pace (frequency) are changes made?
+> - Is a company moving slow or moving fast?
+> - A focus on the content of decisions can obscure the issue of how decisions are received.
+
+##{.flexbox .vcenter}
+
+<b>
+For instance, a company that changes a policy 5x in one year could only be sure that there is confusion and volatility.
+</b>
+
+## 3. Why it matters
+
+> - Often focus in literature on the regular, steady processes
+>   - E.g, exclusion of crisis years, "abnormal" industries from modeling
+> - Irregular events can have unequally big effect on outcome measure
+>     - E.g., performance (insert your own example)
+>     - In sustainability: environmental impacts of disasters
+>     - E.g., deepwater horizont oil spill
+>         - Spilling a couple of barrels every now and then during regular operations
+>         - 4.9 million barrels in one event
+> - Prevent disasters, rather than optimizing regular operations
+
+## 4. Modeling approaches (in theory)
+
+Internal vs. external perspective
+
+> - Internal
+>     - Intention vs effects "on the ground"
+> - External
+>     - Challenge: lack of introspective
+
+## 4. Modeling approaches: data
+
+> - M&As 
+> - <div class="red2"><b>Turnover</b></div>
+>     - Cause of changes (leadership change)
+>     - Symptom of changes (layoffs)
+> - Media perspective (external)
+
+## 4. Modeling approaches: the challenge
+
+> - Model change as a cumulative phenomenon
+> - How do we conceptualize instability as a quantitative phenomenon?
+
+## 5. Outcome variables
+
+> - Industrial disasters
+> - <div class="red2"><b>Product recalls</b></div>
+> - Conventional performance measures
+
+## 6. Data: sample{.smaller}
+
+```{r companies, echo=TRUE, warning=FALSE}
+sample <- read_feather('../sample 2019-03-16.feather')
+unique(sample$name)
+```
+
+## 6. Data: recalls{.smaller}
+
+```{r recalls, echo=TRUE, message=FALSE, warning=FALSE}
+cpsc <- read_csv("../downloads/cpsc.csv")
+cpsc$date <- mdy(cpsc$date)
+cpsc %>%
+  ggplot(aes(x=date)) + geom_histogram() + labs(title = "Histogram of recalls", x="Time", y=element_blank())
+``` 
+
+---
+
+```{r hist_cpsc_focus, echo=TRUE, message=FALSE}
+cpsc %>%
+  filter(.$date >= date("2005-01-01")) %>%
+  ggplot(aes(x=date)) + geom_histogram() + 
+  labs(title = "Histogram of recalls", x="Time", y=element_blank())
+```
+
+## 6. Data: turnover I{.smaller}
+
+```{r time_trend, warning=FALSE, echo=TRUE}
+sample %>%
+  ggplot(aes(x = year)) + geom_bar() + labs(title = 'Observations (executives) per year') + 
+  scale_x_continuous(breaks = seq(2009, 2018, by = 1))
+```
+
+---
+
+```{r tenure, echo=TRUE}
+sample %>% group_by(execid) %>% summarize(n = n()) %>%
+  ggplot(aes(x=n)) + geom_bar() + labs(title='Histogram of tenure of executives') + 
+  scale_x_continuous(breaks = seq(0, 10, by=1))
+```
+
+## References
+- Bansal, P., & DesJardine, M. (2014). Business sustainability: It is about time. Strategic Organization, 12(1), 70–78. https://doi.org/10.1177/1476127013520265
+- Kownatzki, M., Walter, J., Floyd, S. W., & Lechner, C. (2013). Corporate Control and the Speed of Strategic Business Unit Decision Making. Academy of Management Journal, 56(5), 1295–1324. https://doi.org/10.5465/amj.2011.0804
+- Wowak, A. J., Mannor, M. J., & Wowak, K. D. (2015). Throwing Caution to the Wind: The Effect of CEO Stock Option Pay on the Incidence of Product Safety Problems. Strategic Management Journal, 36(7), 1082–1092. https://doi.org/10.1002/smj.2277
+
