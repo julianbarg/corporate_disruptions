@@ -11,15 +11,22 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Read feather
+## 2. Turnover data
+
+### Read feather
 ```{r read}
 library(feather)
 sample <- read_feather('sample 2019-03-16.feather')
 ```
 
-## Explore data
-How many year-executive observations do we have per company?
+### Explore data
 
+Print companies (again)
+```{r companies}
+unique(sample$name)
+```
+
+How many year-executive observations do we have per company?
 ```{r year-executive}
 library(tidyverse)
 
@@ -45,8 +52,41 @@ sample %>%
 How many observations are there for every year? Are observations more complete for recent years?
 ```{r time_trend}
 sample %>%
-  ggplot(aes(x=year)) +
+  ggplot(aes(x = year)) +
   geom_bar() +
-    labs(title='Observations (executives) per year') +
-  scale_x_continuous(breaks = seq(2009, 2018, by=1))
+  labs(title = 'Observations (executives) per year') +
+  scale_x_continuous(breaks = seq(2009, 2018, by = 1))
+```
+
+## 3. Recalls
+
+### Read data
+
+```{r read_cpsc}
+library(lubridate)
+cpsc <- read_csv("downloads/cpsc.csv")
+cpsc$date <- mdy(cpsc$date)
+glimpse(cpsc)
+```
+
+### Explore data
+
+What time period do the recalls cover?
+```{r min}
+min(cpsc$date, na.rm=TRUE)
+```
+
+```{r hist_cpsc}
+cpsc %>%
+  ggplot(aes(x=date)) +
+  geom_histogram() + 
+  labs(title = "Histogram of recalls", x="Time", y=element_blank())
+```
+
+```{r hist_cpsc_focus}
+cpsc %>%
+  filter(.$date >= date("2005-01-01")) %>%
+  ggplot(aes(x=date)) +
+  geom_histogram() + 
+  labs(title = "Histogram of recalls", x="Time", y=element_blank())
 ```
