@@ -49,6 +49,7 @@ For instance, a company that changes a policy 5x in one year could only be sure 
 Internal vs. external perspective
 
 > - Internal
+>     - Impression management
 >     - Intention vs effects "on the ground"
 > - External
 >     - Challenge: lack of introspective
