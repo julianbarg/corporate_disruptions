@@ -1,0 +1,89 @@
+---
+title: "4. Explore recalls"
+author: "Julian Barg"
+date: "April 16, 2019"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggvis)
+```
+
+This document is deployed at https://julianbarg.shinyapps.io/4_-_Explore_recalls/.
+
+## Read data
+
+```{r read}
+library(feather)
+recalls_matched <- read_feather('shiny_data/recalls_matched 2019-04-17.feather')
+
+colnames(recalls_matched)
+```
+
+## Missing data
+
+### Print missing data
+```{r na}
+recalls_matched[is.na(recalls_matched$year), ]
+```
+
+### See all entries for those companies
+```{r na_all}
+missing <- c('003054', '007127', '009563')
+recalls_matched[recalls_matched$gvkey %in% missing, ]
+```
+
+### Drop missings
+The observations for these entries seem to be missing completely. It seems their upper management was not tracked by Compustat. For now, we will remove these completely.
+
+```{r na_remove}
+recalls_matched <- recalls_matched[!(recalls_matched$gvkey %in% missing), ]
+length(unique(recalls_matched$name))
+```
+
+## Visualize recalls per company
+
+### Grab recalls only
+```{r recalls_only}
+recalls <- select(recalls_matched, name, year, recalls)
+recalls <- unique(recalls)
+glimpse(recalls)
+```
+
+### Fill NA with 0
+The NA means no recalls were found, and no executives/upper management is present. So its not incorrect to fill them with 0 for no recalls for the purpose of our visualization.
+```{r spread}
+recalls <- spread(recalls, name, recalls)
+recalls[is.na(recalls)] <- 0
+recalls <- gather(recalls, "name", "recalls", -year)
+glimpse(recalls)
+```
+
+### Visualize recalls by company
+```{r select_company}
+selectInput("company", "Company:",
+            choices = unique(recalls$name), 
+            selected = unique(recalls$name)[1])
+```
+
+```{r render}
+reactive({
+  recalls %>%
+  filter(name == input$company) %>%
+    ggvis(~year, ~recalls) %>%
+    layer_points() %>%
+    add_axis("x", title = "Year") %>%
+    add_axis("y", title = "Recalls") %>%
+    bind_shiny('plot')
+})
+
+ggvisOutput('plot')
+```
+
+Although plenty of companies do not have any nonzero observations, there should be enough cases with variance left to allow for a statistical analysis.
+
+
+
