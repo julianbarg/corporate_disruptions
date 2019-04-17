@@ -8,6 +8,9 @@ runtime: shiny
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r imports}
 library(tidyverse)
 library(ggvis)
 ```
@@ -85,5 +88,35 @@ ggvisOutput('plot')
 
 Although plenty of companies do not have any nonzero observations, there should be enough cases with variance left to allow for a statistical analysis.
 
+## Other exploration
 
+### Observations per year
+```{r by_year}
+recalls %>%
+  group_by(year) %>%
+  summarize(n = sum(recalls))
+```
 
+```{r distribution_year, fig.width=10, fig.height=16}
+recalls %>%
+  ggplot(aes(x=recalls)) +
+  facet_grid(vars(year)) +
+  geom_bar()
+```
+
+### Find outliers
+```{r outliers}
+recalls[recalls$recalls > 8, ]
+```
+
+The outliers are almost all from the same companies, Home Depot and Target. So if we consider in our final model only the change per year, we don't need to be concerned about excessive levarage of those observations.
+
+### Find observations with no variance
+```{r non_zero}
+recalls %>%
+  group_by(name) %>%
+  summarize(max = max(recalls)) %>%
+  filter(max == 0)
+```
+
+18 out of the 39 remaining observations only have non-zero values, leaving us with only 21 observations (companies) with variance.
