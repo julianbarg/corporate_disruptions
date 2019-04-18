@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Read feather
 ```{r read}
 library(feather)
-sample <- read_feather('sample 2019-03-16.feather')
+sample <- read_feather('../downloads/sample 2019-04-18.feather')
 ```
 
 ### Explore data
@@ -64,7 +64,7 @@ sample %>%
 
 ```{r read_cpsc}
 library(lubridate)
-cpsc <- read_csv("downloads/cpsc.csv")
+cpsc <- read_csv("../downloads/cpsc.csv")
 cpsc$date <- mdy(cpsc$date)
 glimpse(cpsc)
 ```

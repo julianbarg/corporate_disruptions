@@ -10,41 +10,20 @@ runtime: shiny
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+This document is deployed at https://julianbarg.shinyapps.io/4_-_Explore_recalls/.
+
 ```{r imports}
 library(tidyverse)
 library(ggvis)
 ```
 
-This document is deployed at https://julianbarg.shinyapps.io/4_-_Explore_recalls/.
-
 ## Read data
 
 ```{r read}
 library(feather)
-recalls_matched <- read_feather('shiny_data/recalls_matched 2019-04-17.feather')
+recalls_matched <- read_feather('shiny_data/recalls_matched 2019-04-18.feather')
 
 colnames(recalls_matched)
-```
-
-## Missing data
-
-### Print missing data
-```{r na}
-recalls_matched[is.na(recalls_matched$year), ]
-```
-
-### See all entries for those companies
-```{r na_all}
-missing <- c('003054', '007127', '009563')
-recalls_matched[recalls_matched$gvkey %in% missing, ]
-```
-
-### Drop missings
-The observations for these entries seem to be missing completely. It seems their upper management was not tracked by Compustat. For now, we will remove these completely.
-
-```{r na_remove}
-recalls_matched <- recalls_matched[!(recalls_matched$gvkey %in% missing), ]
-length(unique(recalls_matched$name))
 ```
 
 ## Visualize recalls per company
@@ -56,13 +35,8 @@ recalls <- unique(recalls)
 glimpse(recalls)
 ```
 
-### Fill NA with 0
-The NA means no recalls were found, and no executives/upper management is present. So its not incorrect to fill them with 0 for no recalls for the purpose of our visualization.
-```{r spread}
-recalls <- spread(recalls, name, recalls)
-recalls[is.na(recalls)] <- 0
-recalls <- gather(recalls, "name", "recalls", -year)
-glimpse(recalls)
+```{r see_nas}
+sum(is.na(recalls$recalls))
 ```
 
 ### Visualize recalls by company
@@ -97,6 +71,8 @@ recalls %>%
   summarize(n = sum(recalls))
 ```
 
+Because our dataset does not have good quality data for the years 2008-2010, we are going to run our analysis based on the years 2011-2017. We might be able to rectify this problem later by adjusting the spider that we scrape the CPSC with.
+
 ```{r distribution_year, fig.width=10, fig.height=16}
 recalls %>%
   ggplot(aes(x=recalls)) +
@@ -112,6 +88,11 @@ recalls[recalls$recalls > 8, ]
 The outliers are almost all from the same companies, Home Depot and Target. So if we consider in our final model only the change per year, we don't need to be concerned about excessive levarage of those observations.
 
 ### Find observations with no variance
+
+```{r num_companies}
+length(unique(recalls$name))
+```
+
 ```{r non_zero}
 recalls %>%
   group_by(name) %>%
@@ -119,4 +100,4 @@ recalls %>%
   filter(max == 0)
 ```
 
-18 out of the 39 remaining observations only have non-zero values, leaving us with only 21 observations (companies) with variance.
+19 out of the 40 remaining observations only have non-zero values, leaving us with only 21 observations (companies) with variance.
