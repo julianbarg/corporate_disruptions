@@ -21,7 +21,7 @@ library(ggvis)
 
 ```{r read}
 library(feather)
-recalls_matched <- read_feather('shiny_data/recalls_matched 2019-04-18.feather')
+recalls_matched <- read_feather('shiny_data/recalls_matched 2019-04-19.feather')
 
 colnames(recalls_matched)
 ```
@@ -49,7 +49,8 @@ selectInput("company", "Company:",
 ```{r render}
 reactive({
   recalls %>%
-  filter(name == input$company) %>%
+    filter(name == input$company) %>%
+    filter(year > 2010) %>%
     ggvis(~year, ~recalls) %>%
     layer_points() %>%
     add_axis("x", title = "Year") %>%
@@ -75,6 +76,7 @@ Because our dataset does not have good quality data for the years 2008-2010, we 
 
 ```{r distribution_year, fig.width=10, fig.height=16}
 recalls %>%
+  filter(year > 2010) %>%
   ggplot(aes(x=recalls)) +
   facet_grid(vars(year)) +
   geom_bar()
@@ -100,4 +102,4 @@ recalls %>%
   filter(max == 0)
 ```
 
-19 out of the 40 remaining observations only have non-zero values, leaving us with only 21 observations (companies) with variance.
+19 out of the 39 remaining observations only have non-zero values, leaving us with only 20 observations (companies) with variance.
