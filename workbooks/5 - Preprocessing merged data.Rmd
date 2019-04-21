@@ -17,7 +17,7 @@ library(tidyverse)
 
 ```{r read}
 library(feather)
-recalls_matched <- read_feather("../preprocessed/recalls_matched 2019-04-20.feather")
+recalls_matched <- read_feather("../preprocessed/recalls_matched 2019-04-21.feather")
 
 personnel <- select(recalls_matched, gvkey, name, execid, year, personnel_is_ceo, personnel_full_name)
 
