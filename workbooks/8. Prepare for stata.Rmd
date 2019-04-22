@@ -1,0 +1,132 @@
+---
+title: "8. Prepare for stata"
+author: "Julian Barg"
+date: "April 22, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r imports}
+library(tidyverse)
+```
+
+## 8.1 Read data
+```{r read}
+library(feather)
+with_controls <- read_feather("../preprocessed/with_controls 2019-04-21.feather")
+
+glimpse(with_controls)
+```
+
+## 8.2 Drop variables we don't need
+```{r drop_wages}
+with_controls <- select(with_controls, -n_employees, -n_exits, -wages_and_salaries, -r_n_d)
+
+glimpse(with_controls)
+```
+
+## 8.3 High turnover
+```{r high}
+median_turnover <- quantile(with_controls$turnover, 0.5)
+high_turnover <- quantile(with_controls$turnover, 0.75)
+
+print(median_turnover)
+print(high_turnover)
+```
+
+```{r n}
+sum(with_controls$turnover >= median_turnover)
+sum(with_controls$turnover >= high_turnover)
+```
+
+```{r cols}
+with_controls$elevated_turnover <- with_controls$turnover >= median_turnover
+with_controls$high_turnover <- with_controls$turnover >= high_turnover
+
+glimpse(select(with_controls, elevated_turnover, high_turnover))
+```
+
+## 8.4 Create lagged variables
+```{r lag}
+with_lagged <- with_controls %>%
+  arrange(gvkey, year) %>%
+  group_by(gvkey) %>%
+  mutate(turnover_1 = lag(turnover, 1), 
+         turnover_2 = lag(turnover, 2), 
+         turnover_3 = lag(turnover, 3), 
+         turnover_4 = lag(turnover, 4), 
+         turnover_5 = lag(turnover, 5),
+         elevated_turnover_1 = lag(elevated_turnover, 1),
+         elevated_turnover_2 = lag(elevated_turnover, 2),
+         elevated_turnover_3 = lag(elevated_turnover, 3),
+         elevated_turnover_4 = lag(elevated_turnover, 4),
+         elevated_turnover_5 = lag(elevated_turnover, 5),
+         high_turnover_1 = lag(high_turnover, 1),
+         high_turnover_2 = lag(high_turnover, 2),
+         high_turnover_3 = lag(high_turnover, 3),
+         high_turnover_4 = lag(high_turnover, 4),
+         high_turnover_5 = lag(high_turnover, 5),
+         ceo_exit_1 = lag(ceo_exit, 1),
+         ceo_exit_2 = lag(ceo_exit, 2),
+         ceo_exit_3 = lag(ceo_exit, 3)) %>%
+  ungroup()
+
+glimpse(with_lagged)
+```
+
+We create a variable describing how many high/elevated turnover years a company had in the previous 3/5 years.
+```{r turnover_years}
+with_lagged <- with_lagged %>%
+  mutate(elevated_turnover_running_3 = elevated_turnover_1 + elevated_turnover_2 + elevated_turnover_3,
+         elevated_turnover_running_5 = 
+           elevated_turnover_1 + elevated_turnover_2 + elevated_turnover_3 + elevated_turnover_4 + elevated_turnover_5,
+         high_turnover_running_3 = high_turnover_1 + high_turnover_2 + high_turnover_3,
+         high_turnover_running_5 = 
+           high_turnover_1 + high_turnover_3 + high_turnover_3 + high_turnover_4 + high_turnover_5)
+
+with_lagged <- with_lagged %>%
+  rowwise() %>%
+  mutate(ceo_exit_recent = as.logical(TRUE %in% c(ceo_exit_1, ceo_exit_2, ceo_exit_3)))
+
+glimpse(select(with_lagged, 
+               name,
+               year,
+               elevated_turnover_running_3, 
+               elevated_turnover_running_5, 
+               high_turnover_running_3, 
+               high_turnover_running_5,
+               ceo_exit,
+               ceo_exit_recent))         
+```
+
+## 8.5 Calculate revenue and recalls change
+```{r rev_growth}
+with_lagged <- with_lagged %>%
+  arrange(gvkey, year) %>%
+  group_by(gvkey) %>%
+  mutate(growth = revenue - lag(revenue),
+         recalls_change = recalls - lag(recalls)) %>%
+  ungroup()
+
+glimpse(select(with_lagged, growth, recalls_change))
+```
+
+## 8.6 Cleanup rows and dtypes
+
+```{r cleanup}
+with_lagged <- subset(with_lagged, year > 2010)
+
+with_lagged$gvkey <- as.factor(with_lagged$gvkey)
+with_lagged$name <- as.factor(with_lagged$name)
+
+glimpse(with_lagged)
+```
+
+## 8.7 Write to dta
+
+```{r export}
+haven::write_dta(with_lagged, paste0("../preprocessed/pace ", Sys.Date(), ".dta"))
+```

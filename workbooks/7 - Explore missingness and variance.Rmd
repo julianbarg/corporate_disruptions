@@ -1,0 +1,102 @@
+---
+title: "7 - Explore missingness and variance"
+author: "Julian Barg"
+date: "April 21, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r imports}
+library(tidyverse)
+```
+
+## Read data
+```{r read}
+library(feather)
+with_controls <- read_feather("../preprocessed/with_controls 2019-04-21.feather")
+
+glimpse(with_controls)
+```
+
+## Missingness
+
+```{r missings}
+library(naniar)
+
+miss_var_summary(with_controls)
+```
+
+```{r revenye}
+subset(with_controls, is.na(r_n_d))
+```
+
+```{r r_n_d}
+subset(with_controls, is.na(r_n_d))
+```
+
+## Find complete and useful cases (after 2010)
+
+```{r complete}
+overview <- with_controls %>%
+  filter(year > 2010) %>%
+  group_by(name) %>%
+  summarize(complete = as.logical(min(!is.na(r_n_d))),
+            variance = as.logical(max(recalls)),
+            useful = complete & variance)
+
+print(overview)
+
+sum(overview$useful)
+```
+
+In terms of r_n_d, we have 17 complete observations with variance in recalls.
+
+## Complete and useful cases (with lagged DV)
+
+```{r complete2}
+complete2 <- with_controls %>%
+  group_by(name) %>%
+  mutate(recalls = lag(recalls)) %>%
+  filter(year > 2011) %>%
+  summarize(complete = as.logical(min(!is.na(r_n_d))),
+            variance = as.logical(max(recalls)),
+            useful = complete & variance)
+
+print(complete2)
+
+sum(complete2$useful, na.rm=TRUE)
+```
+
+Still, 17 cases with useful variance.
+
+## Quartiles
+
+```{r quartiles}
+quantile(with_controls$turnover)
+```
+
+## Completeness years
+
+```{r n_observations}
+with_controls %>%
+  group_by(name) %>%
+  summarize(n = n())
+```
+
+Some companies have not existed for the whole or changed their form during the observation period.
+
+```{r time}
+with_controls %>%
+  group_by(year) %>%
+  summarize(n = n())
+```
+
+## Look at R&D
+
+```{r r_n_d_hist}
+table(with_controls$r_n_d)
+```
+
