@@ -1,0 +1,190 @@
+---
+title: "9. Exploratory analysis"
+author: "Julian Barg"
+date: "April 22, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r tidy}
+library(tidyverse)
+```
+
+## 9.1 Read
+
+```{r read_stata}
+library(haven)
+
+pace <- read_stata("../preprocessed/pace 2019-04-22.dta")
+glimpse(pace)
+```
+
+```{r dtypes}
+pace$gvkey <- as_factor(pace$gvkey)
+pace$name <- as_factor(pace$name)
+pace$ceo_exit <- as.logical(pace$ceo_exit)
+pace$ceo_exit_recent <- as.logical(pace$ceo_exit_recent)
+pace$ceo_exit_1 <- as.logical(pace$ceo_exit_1)
+
+glimpse(select(pace, gvkey, name, ceo_exit, ceo_exit_recent))
+```
+
+## 9.2 Plotting
+
+### 9.2.1 Management team turnover
+
+Turnover only
+
+```{r turnover}
+pace %>%
+  ggplot(aes(x=turnover_1, y=recalls_change)) +
+  geom_jitter() +
+  geom_smooth(method="lm")
+```
+
+```{r turnover_variance}
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%  
+    ggplot(aes(x=turnover_1, y=recalls_change)) +
+    geom_jitter() +
+    geom_smooth(method="lm")
+```
+
+Turnover-outliers.
+
+```{r pace2}
+pace %>%
+  ggplot(aes(x=high_turnover_running_3, y=recalls_change)) +
+  geom_jitter() +
+  geom_smooth(method="lm")
+
+pace %>%
+  ggplot(aes(x=high_turnover_running_5, y=recalls_change)) +
+  geom_jitter() +
+  geom_smooth(method="lm", color="red")
+```
+
+```{r pace2_variance}
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=high_turnover_running_3, y=recalls_change)) +
+    geom_jitter() +
+    geom_smooth(method="lm")
+
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=high_turnover_running_5, y=recalls_change)) +
+    geom_jitter() +
+    geom_smooth(method="lm", color="red")
+```
+
+Turnover elevated
+
+```{r pace}
+pace %>%
+  ggplot(aes(x=elevated_turnover_running_3, y=recalls_change)) +
+  geom_jitter() +
+  geom_smooth(method="lm")
+
+pace %>%
+  ggplot(aes(x=elevated_turnover_running_5, y=recalls_change)) +
+  geom_jitter() +
+  geom_smooth(method="lm", color="red")
+```
+
+```{r pace_variance}
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=elevated_turnover_running_3, y=recalls_change)) +
+    geom_jitter() +
+    geom_smooth(method="lm")
+
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=elevated_turnover_running_5, y=recalls_change)) +
+    geom_jitter() +
+    geom_smooth(method="lm", color="red")
+```
+
+### 9.2.2 CEO change
+
+Effective of current year ceo change on current year absolute recalls
+
+```{r ceo_absolute}
+pace %>%
+  ggplot(aes(x=ceo_exit, y=recalls)) +
+  geom_boxplot()
+
+pace %>%
+  ggplot(aes(x=ceo_exit_recent, y=recalls)) +
+  geom_boxplot()
+```
+
+Effective of recent ceo change on current year recalls change
+
+```{r ceo_relative}
+pace %>%
+  ggplot(aes(x=ceo_exit, y=recalls_change)) +
+  geom_boxplot()
+
+pace %>%
+  ggplot(aes(x=ceo_exit_recent, y=recalls_change)) +
+  geom_boxplot()
+```
+
+Effective of recent ceo change on current year recalls change (companies with variance at any point in time only)
+
+```{r ceo_relative_variance}
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=ceo_exit, y=recalls_change)) +
+    geom_boxplot()
+
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=ceo_exit_recent, y=recalls_change)) +
+    geom_boxplot()
+
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=ceo_exit_1, y=recalls_change)) +
+    geom_boxplot()
+```
+
+### 9.2.3 Plotting with residuals
+
+```{r linear model}
+model1 <- lm(data = pace, recalls_change ~ growth)
+model2 <- lm(data = pace, recalls_change ~ growth_1)
+model3 <- lm(data = pace, recalls_change ~ growth + growth_1)
+summary(model1)
+print("-------------------------------")
+summary(model2)
+print("-------------------------------")
+summary(model3)
+```
+
+```{r residuals}
+residuals <- model3$residuals
+head(residuals)
+```
+
+```{r plot_residuals}
+pace_residuals <- cbind(pace[!is.na(pace$revenue), ], residuals)
+
+pace_residuals %>%
+  ggplot(aes(x=high_turnover_running_3, y=residuals)) +
+  geom_point() +
+  geom_smooth(method="lm")
+```

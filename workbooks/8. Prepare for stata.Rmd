@@ -111,7 +111,13 @@ with_lagged <- with_lagged %>%
          recalls_change = recalls - lag(recalls)) %>%
   ungroup()
 
-glimpse(select(with_lagged, growth, recalls_change))
+with_lagged <- with_lagged %>%
+  arrange(gvkey, year) %>%
+  group_by(gvkey) %>%
+  mutate(growth_1 = lag(growth, 1)) %>%
+  ungroup()
+
+glimpse(select(with_lagged, growth, recalls_change, growth_1))
 ```
 
 ## 8.6 Cleanup rows and dtypes

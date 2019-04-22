@@ -364,11 +364,18 @@ glimpse(select(with_lagged,
          recalls_change = recalls - lag(recalls)) %&gt;%
   ungroup()</code></pre>
 <pre><code>## Warning: Grouping rowwise data frame strips rowwise nature</code></pre>
-<pre class="r"><code>glimpse(select(with_lagged, growth, recalls_change))</code></pre>
+<pre class="r"><code>with_lagged &lt;- with_lagged %&gt;%
+  arrange(gvkey, year) %&gt;%
+  group_by(gvkey) %&gt;%
+  mutate(growth_1 = lag(growth, 1)) %&gt;%
+  ungroup()
+
+glimpse(select(with_lagged, growth, recalls_change, growth_1))</code></pre>
 <pre><code>## Observations: 444
-## Variables: 2
+## Variables: 3
 ## $ growth         &lt;dbl&gt; NA, 4089.000, 4992.000, 4679.000, 578.000, 433.00…
-## $ recalls_change &lt;dbl&gt; NA, 0, 0, 0, 0, 1, 4, 1, -1, -1, 5, -5, NA, 0, 0,…</code></pre>
+## $ recalls_change &lt;dbl&gt; NA, 0, 0, 0, 0, 1, 4, 1, -1, -1, 5, -5, NA, 0, 0,…
+## $ growth_1       &lt;dbl&gt; NA, NA, 4089.000, 4992.000, 4679.000, 578.000, 43…</code></pre>
 </div>
 <div id="cleanup-rows-and-dtypes" class="section level2">
 <h2>8.6 Cleanup rows and dtypes</h2>
@@ -379,7 +386,7 @@ with_lagged$name &lt;- as.factor(with_lagged$name)
 
 glimpse(with_lagged)</code></pre>
 <pre><code>## Observations: 254
-## Variables: 34
+## Variables: 35
 ## $ gvkey                       &lt;fct&gt; 002184, 002184, 002184, 002184, 0021…
 ## $ name                        &lt;fct&gt; Best Buy Co Inc, Best Buy Co Inc, Be…
 ## $ year                        &lt;dbl&gt; 2011, 2012, 2013, 2014, 2015, 2016, …
@@ -413,7 +420,8 @@ glimpse(with_lagged)</code></pre>
 ## $ high_turnover_running_5     &lt;int&gt; 0, 2, 2, 1, 2, 1, 1, 3, 2, 0, 1, 0, …
 ## $ ceo_exit_recent             &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, F…
 ## $ growth                      &lt;dbl&gt; 433.000, -5620.000, -2675.000, -2071…
-## $ recalls_change              &lt;dbl&gt; 1, 4, 1, -1, -1, 5, -5, 0, 0, 11, 3,…</code></pre>
+## $ recalls_change              &lt;dbl&gt; 1, 4, 1, -1, -1, 5, -5, 0, 0, 11, 3,…
+## $ growth_1                    &lt;dbl&gt; 578.000, 433.000, -5620.000, -2675.0…</code></pre>
 </div>
 <div id="write-to-dta" class="section level2">
 <h2>8.7 Write to dta</h2>
