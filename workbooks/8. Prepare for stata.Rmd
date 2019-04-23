@@ -152,6 +152,16 @@ four_obs <- with_lagged %>%
   filter(n >= 4) %>%
   select(-n)
 
+four_obs <- four_obs %>%
+  arrange(gvkey, year) %>%
+  group_by(gvkey) %>%
+  mutate(num = row_number(),
+         last = row_number() == n()) %>%
+  ungroup() %>%
+  filter(!(num == 7 & last == TRUE)) %>%
+  select(-num, -last)
+  
+
 four_obs %>%
   count(gvkey)
 

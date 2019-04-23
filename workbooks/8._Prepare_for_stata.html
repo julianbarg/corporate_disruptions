@@ -452,22 +452,31 @@ glimpse(with_lagged)</code></pre>
   filter(n &gt;= 4) %&gt;%
   select(-n)
 
+four_obs &lt;- four_obs %&gt;%
+  arrange(gvkey, year) %&gt;%
+  group_by(gvkey) %&gt;%
+  mutate(num = row_number(),
+         last = row_number() == n()) %&gt;%
+  ungroup() %&gt;%
+  filter(!(num == 7 &amp; last == TRUE)) %&gt;%
+  select(-num, -last)
+  
+
 four_obs %&gt;%
   count(gvkey)</code></pre>
 <pre><code>## # A tibble: 35 x 2
-## # Groups:   gvkey [35]
 ##    gvkey      n
 ##    &lt;fct&gt;  &lt;int&gt;
-##  1 002184     7
-##  2 003813     7
-##  3 003964     7
-##  4 004016     7
+##  1 002184     6
+##  2 003813     6
+##  3 003964     6
+##  4 004016     6
 ##  5 004560     4
-##  6 004611     7
+##  6 004611     6
 ##  7 005125     8
-##  8 005680     7
-##  9 006307     7
-## 10 006733     7
+##  8 005680     6
+##  9 006307     6
+## 10 006733     6
 ## # … with 25 more rows</code></pre>
 <pre class="r"><code>haven::write_dta(with_lagged, paste0(&quot;../preprocessed/pace_four &quot;, Sys.Date(), &quot;.dta&quot;))</code></pre>
 </div>
