@@ -477,7 +477,8 @@ glimpse(pace_delta_2)</code></pre>
   mutate(high_turnover_3 = lag(high_turnover) + lag(high_turnover, 2) + lag(high_turnover, 3), 
          recalls_3 = recalls + lead(recalls) + lead(recalls, 2),
          ceo_exit_3 = as.logical(lag(ceo_exit) + lag(ceo_exit, 2) + lag(ceo_exit, 3)),
-         revenue_1 = lag(revenue)) %&gt;%
+         revenue_1 = lag(revenue),
+         revenue_3 = revenue + lead(revenue) + lead(revenue, 2)) %&gt;%
   ungroup()
 
 pace_delta_3 &lt;- subset(pace_delta_3, year %in% c(2011, 2014))
@@ -487,7 +488,7 @@ pace_delta_3$name &lt;- as.factor(pace_delta_3$name)
 
 glimpse(pace_delta_3)</code></pre>
 <pre><code>## Observations: 73
-## Variables: 13
+## Variables: 14
 ## $ gvkey             &lt;fct&gt; 002184, 002184, 002290, 003813, 003813, 003964…
 ## $ name              &lt;fct&gt; Best Buy Co Inc, Best Buy Co Inc, Officemax In…
 ## $ year              &lt;dbl&gt; 2011, 2014, 2011, 2011, 2014, 2011, 2014, 2011…
@@ -500,7 +501,8 @@ glimpse(pace_delta_3)</code></pre>
 ## $ high_turnover_3   &lt;int&gt; 1, 1, 2, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0…
 ## $ recalls_3         &lt;dbl&gt; 12, 18, NA, 33, 37, 4, 1, 0, 4, 1, NA, 5, 6, 0…
 ## $ ceo_exit_3        &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE…
-## $ revenue_1         &lt;dbl&gt; 50272.000, 42410.000, 7150.007, 67390.000, 725…</code></pre>
+## $ revenue_1         &lt;dbl&gt; 50272.000, 42410.000, 7150.007, 67390.000, 725…
+## $ revenue_3         &lt;dbl&gt; 138200.00, 119270.00, NA, 215762.00, 215898.00…</code></pre>
 <pre class="r"><code>haven::write_dta(pace_delta_3, paste0(&quot;../preprocessed/pace_delta_3 &quot;, Sys.Date(), &quot;.dta&quot;))</code></pre>
 </div>
 
