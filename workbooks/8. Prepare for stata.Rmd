@@ -71,7 +71,8 @@ with_lagged <- with_controls %>%
          high_turnover_5 = lag(high_turnover, 5),
          ceo_exit_1 = lag(ceo_exit, 1),
          ceo_exit_2 = lag(ceo_exit, 2),
-         ceo_exit_3 = lag(ceo_exit, 3)) %>%
+         ceo_exit_3 = lag(ceo_exit, 3), 
+         revenue_1 = lag(revenue, 1)) %>%
   ungroup()
 
 glimpse(with_lagged)
