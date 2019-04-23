@@ -149,7 +149,7 @@ pace_delta_2 <- with_controls %>%
          recalls_2 = recalls + lead(recalls),
          ceo_exit_2 = as.logical(lag(ceo_exit) + lag(ceo_exit, 2)))
 
-pace_delta_2 <- subset(with_lagged, year %in% c(2011, 2013, 2015, 2017))
+pace_delta_2 <- subset(pace_delta_2, year %in% c(2011, 2013, 2015, 2017))
 
 haven::write_dta(pace_delta_2, paste0("../preprocessed/pace_delta_2 ", Sys.Date(), ".dta"))
 ```
