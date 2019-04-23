@@ -18,7 +18,7 @@ library(tidyverse)
 ```{r read_stata}
 library(haven)
 
-pace <- read_stata("../preprocessed/pace 2019-04-22.dta")
+pace <- read_stata("../preprocessed/pace 2019-04-23.dta")
 glimpse(pace)
 ```
 
@@ -162,9 +162,27 @@ pace %>%
     geom_boxplot()
 ```
 
-### 9.2.3 Plotting with residuals
+### 9.2.3 Plotting recalls 3-years change
 
-```{r linear model}
+```{r change_3_years}
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=elevated_turnover_running_3, y=recalls_change_3)) +
+    geom_jitter() +
+    geom_smooth(method="lm")
+
+pace %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=elevated_turnover_running_5, y=recalls_change_3)) +
+    geom_jitter() +
+    geom_smooth(method="lm", color="red")
+```
+
+### 9.2.4 Plotting with residuals
+
+```{r linear_model}
 model1 <- lm(data = pace, recalls_change ~ growth)
 model2 <- lm(data = pace, recalls_change ~ growth_1)
 model3 <- lm(data = pace, recalls_change ~ growth + growth_1)
