@@ -139,3 +139,23 @@ glimpse(with_lagged)
 ```{r export}
 haven::write_dta(with_lagged, paste0("../preprocessed/pace ", Sys.Date(), ".dta"))
 ```
+
+## 8.8 Alternative dataset (obs >= 4)
+```{r 4+}
+with_lagged %>%
+   count(gvkey) %>%
+   filter(n<4)
+
+four_obs <- with_lagged %>%
+  group_by(gvkey) %>%
+  mutate(n = n()) %>%
+  filter(n >= 4) %>%
+  select(-n)
+
+four_obs %>%
+  count(gvkey)
+
+haven::write_dta(with_lagged, paste0("../preprocessed/pace_four ", Sys.Date(), ".dta"))
+```
+
+
