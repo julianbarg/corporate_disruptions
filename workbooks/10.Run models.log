@@ -1,0 +1,79 @@
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
+  log type:  text
+ opened on:  23 Apr 2019, 15:35:32
+
+. do "D:\profiles\jbarg\AppData\Local\Temp\27\STDef8c_000000.tmp"
+
+. use "H:\jbarg\PycharmProjects\corporate_disruptions\preprocessed\pace_delta_3 2019-04-23.dta"
+
+. xtset name year, delta(3)
+       panel variable:  name (unbalanced)
+        time variable:  year, 2011 to 2014
+                delta:  3 units
+
+. xtreg recalls_3 high_turnover_3 revenue_1 ceo_exit_3, fe vce(cluster name)
+
+Fixed-effects (within) regression               Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.2357                                         min =          1
+     between = 0.4714                                         avg =        1.9
+     overall = 0.4540                                         max =          2
+
+                                                F(3,36)           =       2.66
+corr(u_i, Xb)  = 0.0908                         Prob > F          =     0.0625
+
+                                     (Std. Err. adjusted for 37 clusters in name)
+---------------------------------------------------------------------------------
+                |               Robust
+      recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+----------------+----------------------------------------------------------------
+high_turnover_3 |   2.062833   .9847874     2.09   0.043      .065592    4.060075
+      revenue_1 |   .0002648   .0002701     0.98   0.334     -.000283    .0008126
+     ceo_exit_3 |   .6968485   .9935891     0.70   0.488    -1.318244    2.711941
+          _cons |  -1.077853   4.347773    -0.25   0.806    -9.895546     7.73984
+----------------+----------------------------------------------------------------
+        sigma_u |  5.8918664
+        sigma_e |   2.587302
+            rho |   .8383381   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------
+
+. xtreg recalls_3 high_turnover_3 revenue_1, fe vce(cluster name)
+
+Fixed-effects (within) regression               Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.2298                                         min =          1
+     between = 0.4663                                         avg =        1.9
+     overall = 0.4488                                         max =          2
+
+                                                F(2,36)           =       3.56
+corr(u_i, Xb)  = 0.1269                         Prob > F          =     0.0388
+
+                                     (Std. Err. adjusted for 37 clusters in name)
+---------------------------------------------------------------------------------
+                |               Robust
+      recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+----------------+----------------------------------------------------------------
+high_turnover_3 |   2.160908   .9620806     2.25   0.031     .2097179    4.112098
+      revenue_1 |   .0002488   .0002654     0.94   0.355    -.0002895    .0007871
+          _cons |  -.7950229   4.269061    -0.19   0.853     -9.45308    7.863035
+----------------+----------------------------------------------------------------
+        sigma_u |  5.9454165
+        sigma_e |  2.5562867
+            rho |  .84397805   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. log close
+      name:  <unnamed>
+       log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
+  log type:  text
+ closed on:  23 Apr 2019, 15:35:42
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
