@@ -40,14 +40,16 @@ Turnover only
 
 ```{r turnover}
 pace %>%
-  ggplot(aes(x=turnover_1, y=recalls_change)) +
-  geom_jitter() +
-  geom_smooth(method="lm")
+  filter(year > 2011) %>%
+    ggplot(aes(x=turnover_1, y=recalls_change)) +
+    geom_jitter() +
+    geom_smooth(method="lm")
 ```
 
 ```{r turnover_variance}
 pace %>%
   group_by(gvkey) %>%
+  filter(year > 2011) %>%
   filter(max(recalls, na.rm=TRUE) > 0) %>%  
     ggplot(aes(x=turnover_1, y=recalls_change)) +
     geom_jitter() +
@@ -58,11 +60,13 @@ Turnover-outliers.
 
 ```{r pace2}
 pace %>%
-  ggplot(aes(x=high_turnover_running_3, y=recalls_change)) +
-  geom_jitter() +
-  geom_smooth(method="lm")
+  filter(year > 2011) %>%
+    ggplot(aes(x=high_turnover_running_3, y=recalls_change)) +
+    geom_jitter() +
+    geom_smooth(method="lm")
 
 pace %>%
+  filter(year > 2011) %>%
   ggplot(aes(x=high_turnover_running_5, y=recalls_change)) +
   geom_jitter() +
   geom_smooth(method="lm", color="red")
@@ -70,6 +74,7 @@ pace %>%
 
 ```{r pace2_variance}
 pace %>%
+  filter(year > 2011) %>%
   group_by(gvkey) %>%
   filter(max(recalls, na.rm=TRUE) > 0) %>%
     ggplot(aes(x=high_turnover_running_3, y=recalls_change)) +
@@ -77,6 +82,7 @@ pace %>%
     geom_smooth(method="lm")
 
 pace %>%
+  filter(year > 2011) %>%
   group_by(gvkey) %>%
   filter(max(recalls, na.rm=TRUE) > 0) %>%
     ggplot(aes(x=high_turnover_running_5, y=recalls_change)) +
@@ -88,18 +94,21 @@ Turnover elevated
 
 ```{r pace}
 pace %>%
-  ggplot(aes(x=elevated_turnover_running_3, y=recalls_change)) +
-  geom_jitter() +
-  geom_smooth(method="lm")
+  filter(year > 2011) %>%
+    ggplot(aes(x=elevated_turnover_running_3, y=recalls_change)) +
+    geom_jitter() +
+    geom_smooth(method="lm")
 
 pace %>%
-  ggplot(aes(x=elevated_turnover_running_5, y=recalls_change)) +
-  geom_jitter() +
-  geom_smooth(method="lm", color="red")
+  filter(year > 2011) %>%
+    ggplot(aes(x=elevated_turnover_running_5, y=recalls_change)) +
+    geom_jitter() +
+    geom_smooth(method="lm", color="red")
 ```
 
 ```{r pace_variance}
 pace %>%
+  filter(year > 2011) %>%
   group_by(gvkey) %>%
   filter(max(recalls, na.rm=TRUE) > 0) %>%
     ggplot(aes(x=elevated_turnover_running_3, y=recalls_change)) +
@@ -107,6 +116,7 @@ pace %>%
     geom_smooth(method="lm")
 
 pace %>%
+  filter(year > 2011) %>%
   group_by(gvkey) %>%
   filter(max(recalls, na.rm=TRUE) > 0) %>%
     ggplot(aes(x=elevated_turnover_running_5, y=recalls_change)) +
@@ -132,30 +142,35 @@ Effective of recent ceo change on current year recalls change
 
 ```{r ceo_relative}
 pace %>%
-  ggplot(aes(x=ceo_exit, y=recalls_change)) +
-  geom_boxplot()
+  filter(year > 2011) %>%
+    ggplot(aes(x=ceo_exit, y=recalls_change)) +
+    geom_boxplot()
 
 pace %>%
-  ggplot(aes(x=ceo_exit_recent, y=recalls_change)) +
-  geom_boxplot()
+  filter(year > 2011) %>%
+    ggplot(aes(x=ceo_exit_recent, y=recalls_change)) +
+    geom_boxplot()
 ```
 
 Effective of recent ceo change on current year recalls change (companies with variance at any point in time only)
 
 ```{r ceo_relative_variance}
 pace %>%
-  group_by(gvkey) %>%
-  filter(max(recalls, na.rm=TRUE) > 0) %>%
-    ggplot(aes(x=ceo_exit, y=recalls_change)) +
-    geom_boxplot()
+  filter(year > 2011) %>%
+    group_by(gvkey) %>%
+    filter(max(recalls, na.rm=TRUE) > 0) %>%
+      ggplot(aes(x=ceo_exit, y=recalls_change)) +
+      geom_boxplot()
 
 pace %>%
+  filter(year > 2011) %>%
   group_by(gvkey) %>%
   filter(max(recalls, na.rm=TRUE) > 0) %>%
     ggplot(aes(x=ceo_exit_recent, y=recalls_change)) +
     geom_boxplot()
 
 pace %>%
+  filter(year > 2011) %>%
   group_by(gvkey) %>%
   filter(max(recalls, na.rm=TRUE) > 0) %>%
     ggplot(aes(x=ceo_exit_1, y=recalls_change)) +
@@ -166,6 +181,7 @@ pace %>%
 
 ```{r change_3_years}
 pace %>%
+  filter(year > 2013) %>%
   group_by(gvkey) %>%
   filter(max(recalls, na.rm=TRUE) > 0) %>%
     ggplot(aes(x=elevated_turnover_running_3, y=recalls_change_3)) +
@@ -173,11 +189,52 @@ pace %>%
     geom_smooth(method="lm")
 
 pace %>%
+  filter(year > 2013) %>%
   group_by(gvkey) %>%
   filter(max(recalls, na.rm=TRUE) > 0) %>%
     ggplot(aes(x=elevated_turnover_running_5, y=recalls_change_3)) +
     geom_jitter() +
     geom_smooth(method="lm", color="red")
+```
+
+```{r change_3_years_high}
+pace %>%
+  filter(year > 2013) %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=high_turnover_running_3, y=recalls_change_3)) +
+    geom_jitter() +
+    geom_smooth(method="lm")
+
+pace %>%
+  filter(year > 2013) %>%
+  group_by(gvkey) %>%
+  filter(max(recalls, na.rm=TRUE) > 0) %>%
+    ggplot(aes(x=high_turnover_running_5, y=recalls_change_3)) +
+    geom_jitter() +
+    geom_smooth(method="lm", color="red")
+```
+
+Linear model based on the second grap to see leverage of individual points.
+
+```{r see_leverage}
+leverage_1 <- pace %>%
+  filter(year > 2013) %>%
+    lm(data=., recalls_change_3 ~ high_turnover_running_3)
+leverage_2 <- pace %>%
+  filter(year > 2013) %>%
+    lm(data=., recalls_change_3 ~ high_turnover_running_3 + growth_running_3)
+
+summary(leverage_1)
+print("-------------------------------")
+summary(leverage_2)
+```
+
+```{r qqplots}
+par(mfrow=c(2,2))
+plot(leverage_1)
+par(mfrow=c(2,2))
+plot(leverage_2)
 ```
 
 ### 9.2.4 Plotting with residuals

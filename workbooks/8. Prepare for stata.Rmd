@@ -108,6 +108,7 @@ with_lagged <- with_lagged %>%
   arrange(gvkey, year) %>%
   group_by(gvkey) %>%
   mutate(growth = revenue - lag(revenue),
+         growth_running_3 = revenue - lag(revenue, 3),
          recalls_change = recalls - lag(recalls),
          recalls_change_3 = recalls - lag(recalls, 3)) %>%
   ungroup()
