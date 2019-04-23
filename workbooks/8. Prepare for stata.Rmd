@@ -165,7 +165,7 @@ four_obs <- four_obs %>%
 four_obs %>%
   count(gvkey)
 
-haven::write_dta(with_lagged, paste0("../preprocessed/pace_four ", Sys.Date(), ".dta"))
+haven::write_dta(four_obs, paste0("../preprocessed/pace_four ", Sys.Date(), ".dta"))
 ```
 
 
