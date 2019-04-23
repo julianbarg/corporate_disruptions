@@ -435,8 +435,8 @@ glimpse(with_lagged)</code></pre>
 <h2>8.7 Write to dta</h2>
 <pre class="r"><code>haven::write_dta(with_lagged, paste0(&quot;../preprocessed/pace &quot;, Sys.Date(), &quot;.dta&quot;))</code></pre>
 </div>
-<div id="alternative-dataset-obs-4" class="section level2">
-<h2>8.8 Alternative dataset (obs &gt;= 4)</h2>
+<div id="alternative-dataset-delta-2" class="section level2">
+<h2>8.8 Alternative dataset (delta = 2)</h2>
 <pre class="r"><code>pace_delta_2 &lt;- with_controls %&gt;%
   arrange(gvkey, year) %&gt;%
   group_by(gvkey) %&gt;%
@@ -468,6 +468,40 @@ glimpse(pace_delta_2)</code></pre>
 ## $ ceo_exit_2        &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE…
 ## $ revenue_1         &lt;dbl&gt; 50272.000, 45085.000, 40339.000, 39403.000, 71…</code></pre>
 <pre class="r"><code>haven::write_dta(pace_delta_2, paste0(&quot;../preprocessed/pace_delta_2 &quot;, Sys.Date(), &quot;.dta&quot;))</code></pre>
+</div>
+<div id="alternative-dataset-delta-3" class="section level2">
+<h2>8.8 Alternative dataset (delta = 3)</h2>
+<pre class="r"><code>pace_delta_3 &lt;- with_controls %&gt;%
+  arrange(gvkey, year) %&gt;%
+  group_by(gvkey) %&gt;%
+  mutate(high_turnover_3 = lag(high_turnover) + lag(high_turnover, 2) + lag(high_turnover, 3), 
+         recalls_3 = recalls + lead(recalls) + lead(recalls, 2),
+         ceo_exit_3 = as.logical(lag(ceo_exit) + lag(ceo_exit, 2) + lag(ceo_exit, 3)),
+         revenue_1 = lag(revenue)) %&gt;%
+  ungroup()
+
+pace_delta_3 &lt;- subset(pace_delta_3, year %in% c(2011, 2014))
+
+pace_delta_3$gvkey &lt;- as.factor(pace_delta_3$gvkey)
+pace_delta_3$name &lt;- as.factor(pace_delta_3$name)
+
+glimpse(pace_delta_3)</code></pre>
+<pre><code>## Observations: 73
+## Variables: 13
+## $ gvkey             &lt;fct&gt; 002184, 002184, 002290, 003813, 003813, 003964…
+## $ name              &lt;fct&gt; Best Buy Co Inc, Best Buy Co Inc, Officemax In…
+## $ year              &lt;dbl&gt; 2011, 2014, 2011, 2011, 2014, 2011, 2014, 2011…
+## $ turnover          &lt;dbl&gt; 0.0000000, 0.0000000, 0.3333333, 0.4000000, 0.…
+## $ ceo_exit          &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALS…
+## $ recalls           &lt;dbl&gt; 1, 5, 0, 11, 10, 2, 1, 0, 0, 0, 0, 2, 1, 0, 0,…
+## $ revenue           &lt;dbl&gt; 50705.000, 40339.000, 7121.167, 69865.000, 726…
+## $ elevated_turnover &lt;lgl&gt; FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, T…
+## $ high_turnover     &lt;lgl&gt; FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, …
+## $ high_turnover_3   &lt;int&gt; 1, 1, 2, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0…
+## $ recalls_3         &lt;dbl&gt; 12, 18, NA, 33, 37, 4, 1, 0, 4, 1, NA, 5, 6, 0…
+## $ ceo_exit_3        &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE…
+## $ revenue_1         &lt;dbl&gt; 50272.000, 42410.000, 7150.007, 67390.000, 725…</code></pre>
+<pre class="r"><code>haven::write_dta(pace_delta_3, paste0(&quot;../preprocessed/pace_delta_3 &quot;, Sys.Date(), &quot;.dta&quot;))</code></pre>
 </div>
 
 
