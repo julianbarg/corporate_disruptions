@@ -2,9 +2,9 @@
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- opened on:  23 Apr 2019, 15:35:32
+ opened on:  23 Apr 2019, 17:22:50
 
-. do "D:\profiles\jbarg\AppData\Local\Temp\27\STDef8c_000000.tmp"
+. do "H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10. Run models.do"
 
 . use "H:\jbarg\PycharmProjects\corporate_disruptions\preprocessed\pace_delta_3 2019-04-23.dta"
 
@@ -13,59 +13,59 @@
         time variable:  year, 2011 to 2014
                 delta:  3 units
 
-. xtreg recalls_3 high_turnover_3 revenue_1 ceo_exit_3, fe vce(cluster name)
+. xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3, fe vce(cluster name)
 
 Fixed-effects (within) regression               Number of obs     =         71
 Group variable: name                            Number of groups  =         37
 
 R-sq:                                           Obs per group:
-     within  = 0.2357                                         min =          1
-     between = 0.4714                                         avg =        1.9
-     overall = 0.4540                                         max =          2
+     within  = 0.2334                                         min =          1
+     between = 0.4615                                         avg =        1.9
+     overall = 0.4428                                         max =          2
 
-                                                F(3,36)           =       2.66
-corr(u_i, Xb)  = 0.0908                         Prob > F          =     0.0625
+                                                F(3,36)           =       2.84
+corr(u_i, Xb)  = 0.2418                         Prob > F          =     0.0514
 
                                      (Std. Err. adjusted for 37 clusters in name)
 ---------------------------------------------------------------------------------
                 |               Robust
       recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 ----------------+----------------------------------------------------------------
-high_turnover_3 |   2.062833   .9847874     2.09   0.043      .065592    4.060075
-      revenue_1 |   .0002648   .0002701     0.98   0.334     -.000283    .0008126
-     ceo_exit_3 |   .6968485   .9935891     0.70   0.488    -1.318244    2.711941
-          _cons |  -1.077853   4.347773    -0.25   0.806    -9.895546     7.73984
+high_turnover_3 |   2.067526   .9845541     2.10   0.043     .0707581    4.064295
+      revenue_3 |   .0000676   .0000635     1.06   0.295    -.0000613    .0001964
+     ceo_exit_3 |   .7475872   1.040007     0.72   0.477    -1.361644    2.856819
+          _cons |  -.3024003   3.294343    -0.09   0.927    -6.983637    6.378836
 ----------------+----------------------------------------------------------------
-        sigma_u |  5.8918664
-        sigma_e |   2.587302
-            rho |   .8383381   (fraction of variance due to u_i)
+        sigma_u |  6.1162469
+        sigma_e |   2.591142
+            rho |  .84783233   (fraction of variance due to u_i)
 ---------------------------------------------------------------------------------
 
-. xtreg recalls_3 high_turnover_3 revenue_1, fe vce(cluster name)
+. xtreg recalls_3 high_turnover_3 revenue_3, fe vce(cluster name)
 
 Fixed-effects (within) regression               Number of obs     =         71
 Group variable: name                            Number of groups  =         37
 
 R-sq:                                           Obs per group:
-     within  = 0.2298                                         min =          1
-     between = 0.4663                                         avg =        1.9
-     overall = 0.4488                                         max =          2
+     within  = 0.2267                                         min =          1
+     between = 0.4532                                         avg =        1.9
+     overall = 0.4340                                         max =          2
 
-                                                F(2,36)           =       3.56
-corr(u_i, Xb)  = 0.1269                         Prob > F          =     0.0388
+                                                F(2,36)           =       3.48
+corr(u_i, Xb)  = 0.2683                         Prob > F          =     0.0414
 
                                      (Std. Err. adjusted for 37 clusters in name)
 ---------------------------------------------------------------------------------
                 |               Robust
       recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 ----------------+----------------------------------------------------------------
-high_turnover_3 |   2.160908   .9620806     2.25   0.031     .2097179    4.112098
-      revenue_1 |   .0002488   .0002654     0.94   0.355    -.0002895    .0007871
-          _cons |  -.7950229   4.269061    -0.19   0.853     -9.45308    7.863035
+high_turnover_3 |   2.174929   .9432833     2.31   0.027     .2618621    4.087997
+      revenue_3 |   .0000624   .0000642     0.97   0.338    -.0000679    .0001927
+          _cons |  -.0108064   3.345466    -0.00   0.997    -6.795727    6.774114
 ----------------+----------------------------------------------------------------
-        sigma_u |  5.9454165
-        sigma_e |  2.5562867
-            rho |  .84397805   (fraction of variance due to u_i)
+        sigma_u |  6.2131095
+        sigma_e |  2.5613909
+            rho |  .85473379   (fraction of variance due to u_i)
 ---------------------------------------------------------------------------------
 
 . 
@@ -75,5 +75,5 @@ end of do-file
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- closed on:  23 Apr 2019, 15:35:42
+ closed on:  23 Apr 2019, 17:22:56
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
