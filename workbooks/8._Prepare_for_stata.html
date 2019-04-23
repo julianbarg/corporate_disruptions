@@ -437,16 +437,14 @@ glimpse(with_lagged)</code></pre>
 </div>
 <div id="alternative-dataset-obs-4" class="section level2">
 <h2>8.8 Alternative dataset (obs &gt;= 4)</h2>
-<pre class="r"><code>with_lagged %&gt;%
-   count(gvkey) %&gt;%
-   filter(n&lt;4)</code></pre>
-<pre><code>## # A tibble: 3 x 2
-##   gvkey      n
-##   &lt;fct&gt;  &lt;int&gt;
-## 1 002290     2
-## 2 010332     3
-## 3 028648     3</code></pre>
-<pre class="r"><code>pace_delta_2 &lt;- subset(with_lagged, year %in% c(2011, 2013, 2015, 2017))
+<pre class="r"><code>pace_delta_2 &lt;- with_controls %&gt;%
+  arrange(gvkey, year) %&gt;%
+  group_by(gvkey) %&gt;%
+  mutate(high_turnover_2 = lag(high_turnover) + lag(high_turnover, 2), 
+         recalls_2 = recalls + lead(recalls),
+         ceo_exit_2 = as.logical(lag(ceo_exit) + lag(ceo_exit, 2)))
+
+pace_delta_2 &lt;- subset(with_lagged, year %in% c(2011, 2013, 2015, 2017))
 
 haven::write_dta(pace_delta_2, paste0(&quot;../preprocessed/pace_delta_2 &quot;, Sys.Date(), &quot;.dta&quot;))</code></pre>
 </div>

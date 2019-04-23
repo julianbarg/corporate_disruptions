@@ -142,9 +142,12 @@ haven::write_dta(with_lagged, paste0("../preprocessed/pace ", Sys.Date(), ".dta"
 
 ## 8.8 Alternative dataset (obs >= 4)
 ```{r 4+}
-with_lagged %>%
-   count(gvkey) %>%
-   filter(n<4)
+pace_delta_2 <- with_controls %>%
+  arrange(gvkey, year) %>%
+  group_by(gvkey) %>%
+  mutate(high_turnover_2 = lag(high_turnover) + lag(high_turnover, 2), 
+         recalls_2 = recalls + lead(recalls),
+         ceo_exit_2 = as.logical(lag(ceo_exit) + lag(ceo_exit, 2)))
 
 pace_delta_2 <- subset(with_lagged, year %in% c(2011, 2013, 2015, 2017))
 
