@@ -182,26 +182,3 @@ glimpse(pace_delta_3)
 
 haven::write_dta(pace_delta_3, paste0("../preprocessed/pace_delta_3 ", Sys.Date(), ".dta"))
 ```
-
-## 8.9 Alternative dataset (delta = 4)
-```{r delta_4}
-pace_delta_4 <- with_controls %>%
-  arrange(gvkey, year) %>%
-  group_by(gvkey) %>%
-  mutate(high_turnover_4 = lag(high_turnover) + lag(high_turnover, 2) + lag(high_turnover, 3) + lag(high_turnover, 4), 
-         recalls_4 = recalls + lead(recalls) + lead(recalls, 2) + lead(recalls, 3),
-         ceo_exit_4 = as.logical(lag(ceo_exit) + lag(ceo_exit, 2) + lag(ceo_exit, 3) + lag(ceo_exit, 4)),
-         revenue_1 = lag(revenue),
-         revenue_4 = revenue + lead(revenue) + lead(revenue, 2) + lead(revenue, 3)) %>%
-  ungroup()
-
-pace_delta_4 <- subset(pace_delta_4, year %in% c(2011, 2015))
-
-pace_delta_4$gvkey <- as.factor(pace_delta_4$gvkey)
-pace_delta_4$name <- as.factor(pace_delta_4$name)
-
-glimpse(pace_delta_4)
-
-haven::write_dta(pace_delta_4, paste0("../preprocessed/pace_delta_4 ", Sys.Date(), ".dta"))
-```
-
