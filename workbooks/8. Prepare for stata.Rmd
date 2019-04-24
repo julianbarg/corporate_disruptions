@@ -189,7 +189,7 @@ pace_delta_4 <- with_controls %>%
   arrange(gvkey, year) %>%
   group_by(gvkey) %>%
   mutate(high_turnover_4 = lag(high_turnover) + lag(high_turnover, 2) + lag(high_turnover, 3) + lag(high_turnover, 4), 
-         recalls_4 = recalls + lead(recalls) + lead(recalls, 2) + lead(recalls, 4),
+         recalls_4 = recalls + lead(recalls) + lead(recalls, 2) + lead(recalls, 3),
          ceo_exit_4 = as.logical(lag(ceo_exit) + lag(ceo_exit, 2) + lag(ceo_exit, 3) + lag(ceo_exit, 4)),
          revenue_1 = lag(revenue),
          revenue_4 = revenue + lead(revenue) + lead(revenue, 2) + lead(revenue, 3)) %>%
