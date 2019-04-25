@@ -1,0 +1,42 @@
+---
+title: "Web appendix"
+author: "Julian Barg"
+date: "April 25, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r tidy}
+library(tidyverse)
+```
+
+## Load datasets
+```{r load}
+pace_delta_3 <- haven::read_dta("../preprocessed/pace_delta_3 2019-04-25.dta")
+pace_delta_3$name <- as_factor(pace_delta_3$name)
+pace_delta_3$gvkey <- as_factor(pace_delta_3$gvkey)
+```
+
+## Information on dropped observations
+
+These observations were dropped by stata because of NAs
+```{r dropped}
+incomplete_cases <- pace_delta_3[!complete.cases(pace_delta_3), ]
+
+print(incomplete_cases)
+
+pace_delta_3 %>%
+  filter(gvkey %in% incomplete_cases$gvkey) %>%
+  group_by(name) %>%
+  summarize(number_observations = n())
+```
+
+
+
+
+
+
+
