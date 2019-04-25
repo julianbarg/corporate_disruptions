@@ -1,0 +1,79 @@
+---
+title: "Illustrations for paper"
+author: "Julian Barg"
+date: "April 23, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Read data
+
+```{r read}
+pace_delta_3 <- haven::read_dta("../preprocessed/pace_delta_3 2019-04-24.dta")
+glimpse(pace_delta_3)
+```
+
+## 2. Plot absolute values 
+
+```{r plot_absolute}
+illustration_1 <- pace_delta_3 %>%
+  ggplot(aes(x=high_turnover_3, y=recalls_3)) +
+  geom_jitter(height=0.8, width=0.1, alpha=0.4) +
+  geom_smooth() +
+  geom_smooth(method="lm", color="red")
+print(illustration_1)
+```
+
+## 3. Plot change
+
+```{r plot_relative}
+illustration_2 <- pace_delta_3 %>%
+  arrange(gvkey, year) %>%
+  group_by(gvkey) %>%
+  mutate(change_turnover = high_turnover_3 - lag(high_turnover_3),
+         change_recalls = recalls_3 - lag(recalls_3)) %>%
+    ggplot(aes(x=change_turnover, y=change_recalls)) +
+    geom_jitter(height=0.5, width=0.1, alpha=0.6) +
+    geom_smooth(method="loess") +
+    geom_smooth(method="lm", color="red") +
+    scale_x_continuous(limits=c(-1.1, 2.1)) +
+    scale_y_continuous(limits=c(-15, 15))
+print(illustration_2)
+```
+
+### Remove the outliers
+
+```{r plot_without_outlier_1}
+illustration_3 <- pace_delta_3 %>%
+  arrange(gvkey, year) %>%
+  group_by(gvkey) %>%
+  mutate(change_turnover = high_turnover_3 - lag(high_turnover_3),
+         recalls_change = recalls_3 - lag(recalls_3)) %>%
+  filter(recalls_change > -10) %>%
+    ggplot(aes(x=change_turnover, y=recalls_change)) +
+    geom_jitter(height=0.5, width=0.1, alpha=0.6) +
+    geom_smooth(method="loess") +
+    geom_smooth(method="lm", color="red") +
+    scale_x_continuous(limits=c(-1.1, 2.1)) +
+    scale_y_continuous(limits=c(-15, 15))
+print(illustration_3)
+```
+
+```{r plot_without_outlier_2}
+illustration_4 <- pace_delta_3 %>%
+  arrange(gvkey, year) %>%
+  group_by(gvkey) %>%
+  mutate(change_turnover = high_turnover_3 - lag(high_turnover_3),
+         recalls_change = recalls_3 - lag(recalls_3)) %>%
+  filter(recalls_change > -10, change_turnover != 2) %>%
+    ggplot(aes(x=change_turnover, y=recalls_change)) +
+    geom_jitter(height=0.5, width=0.1, alpha=0.6) +
+    geom_smooth(method="loess") +
+    geom_smooth(method="lm", color="red") +
+    scale_x_continuous(limits=c(-1.1, 2.1)) +
+    scale_y_continuous(limits=c(-15, 15))
+print(illustration_4)
+```
