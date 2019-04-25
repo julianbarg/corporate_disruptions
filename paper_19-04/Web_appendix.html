@@ -228,13 +228,33 @@ print(incomplete_cases)</code></pre>
 ## #   revenue_1 &lt;dbl&gt;, revenue_3 &lt;dbl&gt;, ceo_and_high_turnover &lt;dbl&gt;</code></pre>
 <pre class="r"><code>pace_delta_3 %&gt;%
   filter(gvkey %in% incomplete_cases$gvkey) %&gt;%
-  group_by(name) %&gt;%
+  group_by(name, gvkey) %&gt;%
   summarize(number_observations = n())</code></pre>
-<pre><code>## # A tibble: 2 x 2
-##   name                 number_observations
-##   &lt;fct&gt;                              &lt;int&gt;
-## 1 Family Dollar Stores                   2
-## 2 Officemax Inc                          1</code></pre>
+<pre><code>## # A tibble: 2 x 3
+## # Groups:   name [2]
+##   name                 gvkey  number_observations
+##   &lt;fct&gt;                &lt;fct&gt;                &lt;int&gt;
+## 1 Family Dollar Stores 004560                   2
+## 2 Officemax Inc        002290                   1</code></pre>
+<p>Because in the case of Family Dollar Stores, the only available observation was dropped, it does not appear in the final model.</p>
+</div>
+<div id="cases" class="section level2">
+<h2>Cases</h2>
+<pre class="r"><code>unique(subset(pace_delta_3, !gvkey %in% incomplete_cases$gvkey, c(name, gvkey)))</code></pre>
+<pre><code>## # A tibble: 36 x 2
+##    name                 gvkey 
+##    &lt;fct&gt;                &lt;fct&gt; 
+##  1 Best Buy Co Inc      002184
+##  2 Target Corp          003813
+##  3 Dillards Inc  -Cl A  003964
+##  4 Dollar General Corp  004016
+##  5 Macy'S Inc           004611
+##  6 Genuine Parts Co     005125
+##  7 Home Depot Inc       005680
+##  8 Sears Holdings Corp  006307
+##  9 L Brands Inc         006733
+## 10 Lowe'S Companies Inc 006829
+## # … with 26 more rows</code></pre>
 </div>
 
 

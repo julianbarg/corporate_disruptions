@@ -7,6 +7,28 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(knitr)
+hook_output <- knit_hooks$get("output")
+knit_hooks$set(output = function(x, options) {
+  lines <- options$output.lines
+  if (is.null(lines)) {
+    return(hook_output(x, options))  # pass to default hook
+  }
+  x <- unlist(strsplit(x, "\n"))
+  more <- "..."
+  if (length(lines)==1) {        # first n lines
+    if (length(x) > lines) {
+      # truncate the output, but add ....
+      x <- c(head(x, lines), more)
+    }
+  } else {
+    x <- c(more, x[lines], more)
+  }
+  # paste these lines together
+  x <- paste(c(x, ""), collapse = "\n")
+  hook_output(x, options)
+})
 ```
 
 ```{r tidy}
@@ -30,13 +52,16 @@ print(incomplete_cases)
 
 pace_delta_3 %>%
   filter(gvkey %in% incomplete_cases$gvkey) %>%
-  group_by(name) %>%
+  group_by(name, gvkey) %>%
   summarize(number_observations = n())
 ```
 
+Because in the case of Family Dollar Stores, the only available observation was dropped, it does not appear in the final model.
 
-
-
+## Cases
+```{r cases}
+unique(subset(pace_delta_3, !gvkey %in% incomplete_cases$gvkey, c(name, gvkey)))
+```
 
 
 
