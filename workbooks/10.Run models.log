@@ -2,17 +2,18 @@
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- opened on:  23 Apr 2019, 18:25:58
+ opened on:  25 Apr 2019, 12:58:48
 
 . do "H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10. Run models.do"
 
-. use "H:\jbarg\PycharmProjects\corporate_disruptions\preprocessed\pace_delta_3 2019-04-23.dta"
+. use "H:\jbarg\PycharmProjects\corporate_disruptions\preprocessed\pace_delta_3 2019-04-25.dta"
 
 . xtset name year, delta(3)
        panel variable:  name (unbalanced)
         time variable:  year, 2011 to 2014
                 delta:  3 units
 
+. 
 . xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3, fe robust
 
 Fixed-effects (within) regression               Number of obs     =         71
@@ -70,6 +71,7 @@ F test that all u_i=0: F(36, 31) = 8.17                      Prob > F = 0.0000
 
 . estimate store fe
 
+. 
 . xtreg recalls_3 high_turnover_3 revenue_3, fe robust
 
 Fixed-effects (within) regression               Number of obs     =         71
@@ -125,6 +127,7 @@ F test that all u_i=0: F(36, 32) = 8.35                      Prob > F = 0.0000
 
 . estimate store fe2
 
+. 
 . xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3, re robust
 
 Random-effects GLS regression                   Number of obs     =         71
@@ -181,6 +184,7 @@ high_turnover_3 |   .9313293   .8129425     1.15   0.252    -.6620088    2.52466
 
 . estimate store re
 
+. 
 . xtreg recalls_3 high_turnover_3 revenue_3, re robust
 
 Random-effects GLS regression                   Number of obs     =         71
@@ -235,6 +239,7 @@ high_turnover_3 |   1.036222   .7847891     1.32   0.187    -.5019366     2.5743
 
 . estimate store re2
 
+. 
 . hausman fe re
 
 Note: the rank of the differenced variance matrix (2) does not equal the number of coefficients being tested (3); be sure this is what you expect, or there may be problems
@@ -277,11 +282,97 @@ high_turno~3 |    2.174929     1.036222        1.138707         .431659
                 Prob>chi2 =      0.0308
 
 . 
+. xtreg recalls_3 elevated_turnover_3 revenue_3 ceo_exit_3, fe robust
+
+Fixed-effects (within) regression               Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.1368                                         min =          1
+     between = 0.5794                                         avg =        1.9
+     overall = 0.5509                                         max =          2
+
+                                                F(3,36)           =       1.50
+corr(u_i, Xb)  = 0.1907                         Prob > F          =     0.2307
+
+                                         (Std. Err. adjusted for 37 clusters in name)
+-------------------------------------------------------------------------------------
+                    |               Robust
+          recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+elevated_turnover_3 |  -.7213212   .5570616    -1.29   0.204    -1.851095    .4084521
+          revenue_3 |    .000095   .0000499     1.90   0.065    -6.19e-06    .0001963
+         ceo_exit_3 |    1.47599   1.006219     1.47   0.151    -.5647169    3.516696
+              _cons |   .1673834   2.076064     0.08   0.936    -4.043069    4.377835
+--------------------+----------------------------------------------------------------
+            sigma_u |   5.334546
+            sigma_e |  2.7495711
+                rho |  .79009824   (fraction of variance due to u_i)
+-------------------------------------------------------------------------------------
+
+. xtreg recalls_3 elevated_turnover_3 revenue_3, fe robust
+
+Fixed-effects (within) regression               Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.1095                                         min =          1
+     between = 0.5835                                         avg =        1.9
+     overall = 0.5532                                         max =          2
+
+                                                F(2,36)           =       1.42
+corr(u_i, Xb)  = 0.2611                         Prob > F          =     0.2547
+
+                                         (Std. Err. adjusted for 37 clusters in name)
+-------------------------------------------------------------------------------------
+                    |               Robust
+          recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+elevated_turnover_3 |  -.7135671   .5669884    -1.26   0.216    -1.863473    .4363387
+          revenue_3 |    .000087   .0000519     1.68   0.102    -.0000182    .0001922
+              _cons |   .7244104   2.141508     0.34   0.737     -3.61877     5.06759
+--------------------+----------------------------------------------------------------
+            sigma_u |  5.4024792
+            sigma_e |  2.7487573
+                rho |  .79436136   (fraction of variance due to u_i)
+-------------------------------------------------------------------------------------
+
+. 
+. xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3 ceo_and_high_turnover, fe robust
+
+Fixed-effects (within) regression               Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.2366                                         min =          1
+     between = 0.4680                                         avg =        1.9
+     overall = 0.4495                                         max =          2
+
+                                                F(4,36)           =       2.60
+corr(u_i, Xb)  = 0.2219                         Prob > F          =     0.0522
+
+                                           (Std. Err. adjusted for 37 clusters in name)
+---------------------------------------------------------------------------------------
+                      |               Robust
+            recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+      high_turnover_3 |   1.988334   1.058221     1.88   0.068    -.1578381    4.134506
+            revenue_3 |   .0000708   .0000637     1.11   0.274    -.0000584       .0002
+           ceo_exit_3 |  -.1669992   2.120571    -0.08   0.938    -4.467717    4.133719
+ceo_and_high_turnover |   .7415744   1.569807     0.47   0.639    -2.442141     3.92529
+                _cons |  -.4386482   3.268135    -0.13   0.894    -7.066733    6.189437
+----------------------+----------------------------------------------------------------
+              sigma_u |  6.0466518
+              sigma_e |  2.6284167
+                  rho |  .84107469   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------------
+
+. 
 end of do-file
 
 . log close
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- closed on:  23 Apr 2019, 18:26:03
+ closed on:  25 Apr 2019, 12:58:55
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
