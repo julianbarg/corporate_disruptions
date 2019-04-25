@@ -171,7 +171,8 @@ pace_delta_3 <- with_controls %>%
          recalls_3 = recalls + lead(recalls) + lead(recalls, 2),
          ceo_exit_3 = as.logical(lag(ceo_exit) + lag(ceo_exit, 2) + lag(ceo_exit, 3)),
          revenue_1 = lag(revenue),
-         revenue_3 = revenue + lead(revenue) + lead(revenue, 2)) %>%
+         revenue_3 = revenue + lead(revenue) + lead(revenue, 2), 
+         ceo_and_high_turnover = high_turnover_3 * ceo_exit_3) %>%
   ungroup()
 
 pace_delta_3 <- subset(pace_delta_3, year %in% c(2011, 2014))
