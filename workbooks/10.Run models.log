@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- opened on:  25 Apr 2019, 12:58:48
+ opened on:  26 Apr 2019, 00:03:33
 
 . do "H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10. Run models.do"
 
@@ -128,6 +128,60 @@ F test that all u_i=0: F(36, 32) = 8.35                      Prob > F = 0.0000
 . estimate store fe2
 
 . 
+. xtreg recalls_3 high_turnover_3, fe robust
+
+Fixed-effects (within) regression               Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.1821                                         min =          1
+     between = 0.0133                                         avg =        1.9
+     overall = 0.0024                                         max =          2
+
+                                                F(1,36)           =       7.22
+corr(u_i, Xb)  = -0.2419                        Prob > F          =     0.0108
+
+                                     (Std. Err. adjusted for 37 clusters in name)
+---------------------------------------------------------------------------------
+                |               Robust
+      recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+----------------+----------------------------------------------------------------
+high_turnover_3 |   2.411765   .8976302     2.69   0.011     .5912863    4.232243
+          _cons |    3.15493   .4298511     7.34   0.000     2.283151    4.026708
+----------------+----------------------------------------------------------------
+        sigma_u |  8.3431881
+        sigma_e |  2.5940423
+            rho |  .91185164   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------
+
+. xtreg recalls_3 high_turnover_3, fe
+
+Fixed-effects (within) regression               Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.1821                                         min =          1
+     between = 0.0133                                         avg =        1.9
+     overall = 0.0024                                         max =          2
+
+                                                F(1,33)           =       7.35
+corr(u_i, Xb)  = -0.2419                        Prob > F          =     0.0106
+
+---------------------------------------------------------------------------------
+      recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+----------------+----------------------------------------------------------------
+high_turnover_3 |   2.411765   .8897492     2.71   0.011     .6015564    4.221973
+          _cons |    3.15493   .5256587     6.00   0.000     2.085469     4.22439
+----------------+----------------------------------------------------------------
+        sigma_u |  8.3431881
+        sigma_e |  2.5940423
+            rho |  .91185164   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------
+F test that all u_i=0: F(36, 33) = 19.31                     Prob > F = 0.0000
+
+. estimate store fe3
+
+. 
 . xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3, re robust
 
 Random-effects GLS regression                   Number of obs     =         71
@@ -240,6 +294,59 @@ high_turnover_3 |   1.036222   .7847891     1.32   0.187    -.5019366     2.5743
 . estimate store re2
 
 . 
+. xtreg recalls_3 high_turnover_3, re robust
+
+Random-effects GLS regression                   Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.1821                                         min =          1
+     between = 0.0133                                         avg =        1.9
+     overall = 0.0024                                         max =          2
+
+                                                Wald chi2(1)      =       4.63
+corr(u_i, X)   = 0 (assumed)                    Prob > chi2       =     0.0313
+
+                                     (Std. Err. adjusted for 37 clusters in name)
+---------------------------------------------------------------------------------
+                |               Robust
+      recalls_3 |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+----------------+----------------------------------------------------------------
+high_turnover_3 |   1.904474   .8846667     2.15   0.031     .1705593    3.638389
+          _cons |   3.261944   1.293016     2.52   0.012     .7276799    5.796208
+----------------+----------------------------------------------------------------
+        sigma_u |  7.8999987
+        sigma_e |  2.5940423
+            rho |  .90267357   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------
+
+. xtreg recalls_3 high_turnover_3, re
+
+Random-effects GLS regression                   Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.1821                                         min =          1
+     between = 0.0133                                         avg =        1.9
+     overall = 0.0024                                         max =          2
+
+                                                Wald chi2(1)      =       5.11
+corr(u_i, X)   = 0 (assumed)                    Prob > chi2       =     0.0237
+
+---------------------------------------------------------------------------------
+      recalls_3 |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+----------------+----------------------------------------------------------------
+high_turnover_3 |   1.904474   .8421433     2.26   0.024     .2539037    3.555045
+          _cons |   3.261944   1.409824     2.31   0.021     .4987391    6.025149
+----------------+----------------------------------------------------------------
+        sigma_u |  7.8999987
+        sigma_e |  2.5940423
+            rho |  .90267357   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------
+
+. estimate store re3
+
+. 
 . hausman fe re
 
 Note: the rank of the differenced variance matrix (2) does not equal the number of coefficients being tested (3); be sure this is what you expect, or there may be problems
@@ -280,6 +387,23 @@ high_turno~3 |    2.174929     1.036222        1.138707         .431659
                   chi2(2) = (b-B)'[(V_b-V_B)^(-1)](b-B)
                           =        6.96
                 Prob>chi2 =      0.0308
+
+. hausman fe3 re3
+
+                 ---- Coefficients ----
+             |      (b)          (B)            (b-B)     sqrt(diag(V_b-V_B))
+             |      fe3          re3         Difference          S.E.
+-------------+----------------------------------------------------------------
+high_turno~3 |    2.411765     1.904474        .5072904         .287138
+------------------------------------------------------------------------------
+                           b = consistent under Ho and Ha; obtained from xtreg
+            B = inconsistent under Ha, efficient under Ho; obtained from xtreg
+
+    Test:  Ho:  difference in coefficients not systematic
+
+                  chi2(1) = (b-B)'[(V_b-V_B)^(-1)](b-B)
+                          =        3.12
+                Prob>chi2 =      0.0773
 
 . 
 . xtreg recalls_3 elevated_turnover_3 revenue_3 ceo_exit_3, fe robust
@@ -374,5 +498,5 @@ end of do-file
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- closed on:  25 Apr 2019, 12:58:55
+ closed on:  26 Apr 2019, 00:03:41
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
