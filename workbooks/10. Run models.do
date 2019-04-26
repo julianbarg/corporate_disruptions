@@ -36,4 +36,4 @@ xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3 ceo_and_high_turnover, fe r
 
 xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3 ceo_exit_during ceo_exit_1, fe robust
 
-xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3 year, fe robust
+xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3 year_factor, fe robust
