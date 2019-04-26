@@ -19,6 +19,8 @@ Load datasets
 pace_delta_3 <- haven::read_dta("shiny_data/pace_delta_3 2019-04-25.dta")
 pace_delta_3$name <- as_factor(pace_delta_3$name)
 pace_delta_3$gvkey <- as_factor(pace_delta_3$gvkey)
+recalls_matched <- feather::read_feather("shiny_data/recalls_matched 2019-04-21.feather")
+sample <- feather::read_feather("shiny_data/sample 2019-04-20.feather")
 ```
 
 ## 1. Information on dropped observations
@@ -31,7 +33,7 @@ pace_delta_3$gvkey <- as_factor(pace_delta_3$gvkey)
 incomplete_cases <- pace_delta_3[!complete.cases(pace_delta_3), ]
 
 selectInput("column", "Variable:", 
-            choices = colnames(pace_delta_3)[3:ncol(pace_delta_3)])
+            choices = colnames(pace_delta_3)[4:ncol(pace_delta_3)])
 renderTable(select(incomplete_cases, gvkey, name, year, input$column))
 ```
 
@@ -56,6 +58,40 @@ Because in the case of Family Dollar Stores, the only available observation was 
 renderDataTable(unique(subset(pace_delta_3, !gvkey %in% incomplete_cases$gvkey, c(name, gvkey))), 
                 options = list(pageLength=10))
 ```
+
+## 3. Recalls per year
+
+```{r recalls}
+recalls <- unique(select(recalls_matched, name, year, recalls))
+
+selectInput("recalls_year", "Year:", 
+            choices = c(2010:2018))
+
+renderPlot({
+  recalls %>%
+    filter(year == input$recalls_year)%>%
+    ggplot(aes(x=recalls)) +
+    geom_bar() +
+    labs(x="Number of recalls", y="Number of companies with the number of recalls") +
+    scale_x_continuous(limits=c(-1, 20)) +
+    scale_y_continuous(limits=c(0,30))
+})
+```
+
+## 4. Upper management
+
+```{r management}
+cases_in_analysis <- unique(subset(pace_delta_3, complete.cases(pace_delta_3), gvkey))
+
+nrow(unique(subset(sample, year >= 2008 & year <= 2013 & gvkey %in% cases_in_analysis$gvkey, select=execid)))
+
+renderDataTable(subset(sample, 
+                       year >= 2008 & year <= 2013 & gvkey %in% cases_in_analysis$gvkey, 
+                       select=c(name, gvkey, year, execid, personnel_full_name, personnel_is_ceo)), 
+                options = list(pageLength=10))
+```
+
+
 
 
 

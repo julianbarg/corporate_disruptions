@@ -9,17 +9,23 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r tidy}
+library(tidyverse)
+library(stargazer)
+```
+
 ## 1. Read data
 
 ```{r read}
-pace_delta_3 <- haven::read_dta("../preprocessed/pace_delta_3 2019-04-24.dta")
-glimpse(pace_delta_3)
+pace_delta_3 <- haven::read_dta("../preprocessed/pace_delta_3 2019-04-25.dta")
+final_sample <- as.data.frame(subset(pace_delta_3, complete.cases(pace_delta_3)))
+glimpse(final_sample)
 ```
 
 ## 2. Plot absolute values 
 
 ```{r plot_absolute}
-illustration_1 <- pace_delta_3 %>%
+illustration_1 <- final_sample %>%
   ggplot(aes(x=high_turnover_3, y=recalls_3)) +
   geom_jitter(height=0.8, width=0.1, alpha=0.4) +
   geom_smooth() +
@@ -30,7 +36,7 @@ print(illustration_1)
 ## 3. Plot change
 
 ```{r plot_relative}
-illustration_2 <- pace_delta_3 %>%
+illustration_2 <- final_sample %>%
   arrange(gvkey, year) %>%
   group_by(gvkey) %>%
   mutate(change_turnover = high_turnover_3 - lag(high_turnover_3),
@@ -47,7 +53,7 @@ print(illustration_2)
 ### Remove the outliers
 
 ```{r plot_without_outlier_1}
-illustration_3 <- pace_delta_3 %>%
+illustration_3 <- final_sample %>%
   arrange(gvkey, year) %>%
   group_by(gvkey) %>%
   mutate(change_turnover = high_turnover_3 - lag(high_turnover_3),
@@ -63,7 +69,7 @@ print(illustration_3)
 ```
 
 ```{r plot_without_outlier_2}
-illustration_4 <- pace_delta_3 %>%
+illustration_4 <- final_sample %>%
   arrange(gvkey, year) %>%
   group_by(gvkey) %>%
   mutate(change_turnover = high_turnover_3 - lag(high_turnover_3),
@@ -77,3 +83,41 @@ illustration_4 <- pace_delta_3 %>%
     scale_y_continuous(limits=c(-15, 15))
 print(illustration_4)
 ```
+
+## 4. Summary statistics
+
+```{r summary}
+variable_names_formated <- c("Recalls", "High Turnover", "Revenue", "CEO Exit", "High Turnover * CEO Exit", "Elevated Turnover")
+
+summary_statistics <- capture.output(stargazer(subset(final_sample, select = c(recalls_3, 
+                                                                               high_turnover_3, 
+                                                                               revenue_3, 
+                                                                               ceo_exit_3, 
+                                                                               ceo_and_high_turnover, 
+                                                                               elevated_turnover_3)), 
+                                     omit.summary.stat = c("p25", "p75"),
+                                     covariate.labels = variable_names_formated,
+                                     digits=2))
+
+writeLines(summary_statistics, "illustrations/summary.tex")
+```
+
+```{r correlation}
+correlation <- cor(subset(final_sample, select=c(recalls_3, 
+                                                 high_turnover_3, 
+                                                 revenue_3, 
+                                                 ceo_exit_3,
+                                                 ceo_and_high_turnover, 
+                                                 elevated_turnover_3)))
+correlation <- round(correlation, 2)
+correlation[upper.tri(correlation)] <- ""
+colnames(correlation) <- variable_names_formated
+rownames(correlation) <- variable_names_formated
+print(correlation)
+
+correlation_formated <- capture.output(stargazer(correlation, float.env = "sidewaystable"))
+writeLines(correlation_formated, "illustrations/correlation.tex")
+
+```
+
+## Results
