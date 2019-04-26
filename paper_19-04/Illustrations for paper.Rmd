@@ -87,13 +87,12 @@ print(illustration_4)
 ## 4. Summary statistics
 
 ```{r summary}
-variable_names_formated <- c("Recalls", "High Turnover", "Revenue", "CEO Exit", "High Turnover * CEO Exit", "Elevated Turnover")
+variable_names_formated <- c("Recalls", "High Turnover", "Revenue", "CEO Exit", "Elevated Turnover")
 
 summary_statistics <- capture.output(stargazer(subset(final_sample, select = c(recalls_3, 
                                                                                high_turnover_3, 
                                                                                revenue_3, 
                                                                                ceo_exit_3, 
-                                                                               ceo_and_high_turnover, 
                                                                                elevated_turnover_3)), 
                                      omit.summary.stat = c("p25", "p75"),
                                      covariate.labels = variable_names_formated,
@@ -107,7 +106,6 @@ correlation <- cor(subset(final_sample, select=c(recalls_3,
                                                  high_turnover_3, 
                                                  revenue_3, 
                                                  ceo_exit_3,
-                                                 ceo_and_high_turnover, 
                                                  elevated_turnover_3)))
 correlation <- round(correlation, 2)
 correlation[upper.tri(correlation)] <- ""

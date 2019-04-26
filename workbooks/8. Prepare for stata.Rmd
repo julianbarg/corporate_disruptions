@@ -170,6 +170,7 @@ pace_delta_3 <- with_controls %>%
          elevated_turnover_3 = lag(elevated_turnover) + lag(elevated_turnover, 2) + lag(elevated_turnover, 3),
          recalls_3 = recalls + lead(recalls) + lead(recalls, 2),
          ceo_exit_3 = as.logical(lag(ceo_exit) + lag(ceo_exit, 2) + lag(ceo_exit, 3)),
+         ceo_exit_during = as.logical(ceo_exit + lead(ceo_exit, 1) + lead(ceo_exit, 2)), 
          revenue_1 = lag(revenue),
          revenue_3 = revenue + lead(revenue) + lead(revenue, 2), 
          ceo_and_high_turnover = high_turnover_3 * ceo_exit_3) %>%
