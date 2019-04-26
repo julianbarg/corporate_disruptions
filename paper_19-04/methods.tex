@@ -1,0 +1,46 @@
+\section{Methods}
+
+Our model tests whether we can detect an impact of pace on the breakdown of routines. To test this relationship, we constructed a proxy for high pace from upper management turnover, and measured the breakdown of routines as product recalls. We would have preferably measured high pace from turnover in the overall organization: this way we could capture change that effectively ripples through the whole organization. Data on employee turnover is however very sparse. An increase in turnover is a sign of employee dissatisfaction that could affect revenue, and as such companies do not publish this data. Nevertheless, change in upper management is also a good proxy for pace. On the one hand, new members joining a company's upper management team usually bring with them their own ideas for policy changes, and make changes soon after their arrival. On the other hand, changes in the upper management team are often the first indicator of major change initiatives themselves, as the CEO brings new members on board to realize her or his new vision, or gets rid of members of the upper management that stand for the old management routines.
+
+\subsection{Sample selection}
+
+To reduce noise, we limited our sample to one industry. We selected the retail industry, which sells directly to consumers. The business of companies that deal directly with consumers can take serious damage from recalls, when tho news of the recall "go viral" in the media or on social networks, and thus it is ensured that the companies in our sample do not carelessly allow for quality issues to occur. Screening new suppliers, ensuring the quality of new products, and managing the ongoing supply chain typically makes up for a large share of the work load of retail companies, so recalls are a good metric in this industry for capturing the breakdown of these most basic routines, and they should be fairly sensitive to the pace of changes. To select the companies in the sample, we used the Global Industry Classification Standard (GICS), following a similar approach by previous papers \citep{Wowak2015, Baum2003}. Retailing is the industry group 2550, and we excluded Internet \& Direct Marketing Retail (255020; e.g., Amazon). Because Amazon and others allow for third parties to sell products on their plattform independently, we would expect the business not to exhibit the same relationship between pace and breakdown of routines \textit{as captured by recalls}. The observation period is 2011 to 2017 (see next section), and we extended the selection period by another seven years (2004-2017) to avoid a survivorship bias. The sample includes 43 companies.\footnote{For complete information on sample selection see: \datacollection} Two companies were dropped because no data on upper management turnover was found for those companies, and another two companies from the sample were dropped in the process of matching the companies from the sample to the product recalls (see next section).\footnote{For complete information on the merging of the datasets see: \matching} One more company did not have any observations in the observation period,\footnote{For complete information on data preprocessing and creation of the final sample see: \preprocessing} and one last company was dropped in the final model because of missing data.\footnote{See web appendix, part 1: \webappendix} This leaves us with 37 cases.
+
+\subsection{Product recalls}
+
+We scraped the product recalls for the companies in our sample from the website of the US Consumer Product Safety Commission (CPSC; \url{//www.cpsc.gov/Recalls}). The recalls were obtained using the Scrapy package for python.\footnote{See: \spider} We obtained a consistent level of recalls for the years 2011-2017. Historical data from before 2011 is available on the website, but stored in another format. In the year 2018, there is a sudden drop in observations, possibly as an outcome of the new US administration taking control of the CPSC.\footnote{See web appendix, part 3: \webappendix} This leaves us with 7 years of observations. We used the recalls data to obtain the number of recalls per company and year.
+
+\subsection{Upper management turnover}
+
+We used the Compustat ExecuComp database to obtain the turnover of upper management in the companies in our sample. Overall, 1,251 annual observations of 365 individuals informed our analysis (see section model). The upper management turnover was calculated as the number of departing managers divided by the number of managers identified in the company in that year, similar to \citet{Glebbeek2004}. ExecuComp aims to collect data on the most relevant executives in the field, so we assume that the use of the database yields a sample of relevant, high up employees of the companies in the sample (with some noise). We transformed our observation into a dummy variable of high turnover by coding company-year observations at the third quartile and above as one, and the rest as zero.\footnote{A test with elevated turnover, coded as turnover at or above median, yielded no significant results, see: \log}
+
+\subsection{Model}
+
+In our model we aim to capture a process that unfolds slowly in the companies in our sample. A company can exhibit an individual change event at a high speed, as captured in our data by a high turnover in that year. But a high pace is characterized as a continuous pattern of implementing new change initiatives. We empirically capture this pattern of high (or slow) pace as the number of high turnover years over a period of three years (i.e., the maximum is three and the minimum is zero). We expect that the breakdown of routines over one period of time would affect the companies activities in the next period of time, and hence aggregate recalls in that period also. For instance, the observation for company A in the year 2011 includes the number of high turnover years from 2007-2010, and the aggregate number of recalls from 2011-2014. The next period for company A then includes the data for 2011-2014 and 2014-2017 respectively. We have seven years of reliable recall data available, therefore, an aggregation of three years into one allows us to only use six of those. The delta of three years leaves us with 71 complete observations of the 37 cases at two points in time (2011 and 2014) in the model. Two companies have either dropped out, or only entered the sample within our observation period, while one observation had missing variables.
+
+\begin{center}
+	
+	=================
+	
+	= Insert Table 1 here =
+	
+	=================
+	
+	\input{illustrations/summary.tex}
+	
+	=================
+	
+	= Insert Table 2 here =
+	
+	=================
+	
+	\input{illustrations/correlation.tex}	
+	
+\end{center}
+
+We ran a fixed effects model (with adjusted standard errors) to avoid endogeneity as far as possible. The fixed effect model allows for an intercept each company in the sample and thus analyzes the change within companies over time, rather than the relationship between absolute values (since every company has an intercept). We ran a Hausman test for each of the discussed models to further assess whether the fixed effect model is an appropriate choice \citep{Hausman1978}.\footnote{See: \log} To account for the possibility that a change in recalls is driven by primarily by acquisitions, we included revenue in the model. Further, we controlled for the exit of the CEO during the period for which we calculated the high turnover/pace variable also. We further ran a robustness test with dummy variables for CEO departure just within one year before or during the observation period. Finally, we ran a model that includes the year effect.
+
+% $y_{i,t} = X_{i,t}*\beta + \alpha_{i} + \upsilon_{i,t}$
+
+
+

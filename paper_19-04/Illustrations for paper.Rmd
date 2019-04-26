@@ -46,8 +46,12 @@ illustration_2 <- final_sample %>%
     geom_smooth(method="loess") +
     geom_smooth(method="lm", color="red") +
     scale_x_continuous(limits=c(-1.1, 2.1)) +
-    scale_y_continuous(limits=c(-15, 15))
+    scale_y_continuous(limits=c(-15, 15)) +
+    labs(title="Effect of reduced/increased pace on recalls", 
+         x="Increase/deacrease of high pace periods (in years)", 
+         y="Change in # of recalls in the subsequent period.")
 print(illustration_2)
+ggsave("illustrations/graph1.png")
 ```
 
 ### Remove the outliers
@@ -64,8 +68,12 @@ illustration_3 <- final_sample %>%
     geom_smooth(method="loess") +
     geom_smooth(method="lm", color="red") +
     scale_x_continuous(limits=c(-1.1, 2.1)) +
-    scale_y_continuous(limits=c(-15, 15))
+    scale_y_continuous(limits=c(-15, 15)) +
+    labs(title="Effect of reduced/increased pace on recalls (with one outlier removed)", 
+         x="Increase/deacrease of high pace periods (in years)", 
+         y="Change in # of recalls in the subsequent period.")
 print(illustration_3)
+ggsave("illustrations/graph2.png")
 ```
 
 ```{r plot_without_outlier_2}
@@ -80,8 +88,12 @@ illustration_4 <- final_sample %>%
     geom_smooth(method="loess") +
     geom_smooth(method="lm", color="red") +
     scale_x_continuous(limits=c(-1.1, 2.1)) +
-    scale_y_continuous(limits=c(-15, 15))
+    scale_y_continuous(limits=c(-15, 15)) +
+    labs(title="Effect of reduced/increased pace on recalls (with two outliers removed)", 
+         x="Increase/deacrease of high pace periods (in years)", 
+         y="Change in # of recalls in the subsequent period.")
 print(illustration_4)
+ggsave("illustrations/graph3.png")
 ```
 
 ## 4. Summary statistics
