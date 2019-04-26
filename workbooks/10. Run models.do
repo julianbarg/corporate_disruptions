@@ -1,4 +1,4 @@
-use "H:\jbarg\PycharmProjects\corporate_disruptions\preprocessed\pace_delta_3 2019-04-25.dta"
+use "H:\jbarg\PycharmProjects\corporate_disruptions\preprocessed\pace_delta_3 2019-04-26.dta"
 xtset name year, delta(3)
 
 xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3, fe robust
@@ -33,3 +33,5 @@ xtreg recalls_3 elevated_turnover_3 revenue_3 ceo_exit_3, fe robust
 xtreg recalls_3 elevated_turnover_3 revenue_3, fe robust
 
 xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3 ceo_and_high_turnover, fe robust
+
+xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3 ceo_exit_during ceo_exit_1, fe robust

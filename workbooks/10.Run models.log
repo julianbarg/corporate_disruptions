@@ -2,11 +2,11 @@
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- opened on:  26 Apr 2019, 00:03:33
+ opened on:  26 Apr 2019, 01:48:06
 
 . do "H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10. Run models.do"
 
-. use "H:\jbarg\PycharmProjects\corporate_disruptions\preprocessed\pace_delta_3 2019-04-25.dta"
+. use "H:\jbarg\PycharmProjects\corporate_disruptions\preprocessed\pace_delta_3 2019-04-26.dta"
 
 . xtset name year, delta(3)
        panel variable:  name (unbalanced)
@@ -492,11 +492,42 @@ ceo_and_high_turnover |   .7415744   1.569807     0.47   0.639    -2.442141     
 ---------------------------------------------------------------------------------------
 
 . 
+. xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3 ceo_exit_during ceo_exit_1, fe robust
+
+Fixed-effects (within) regression               Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.2602                                         min =          1
+     between = 0.4865                                         avg =        1.9
+     overall = 0.4685                                         max =          2
+
+                                                F(5,36)           =       5.20
+corr(u_i, Xb)  = 0.2092                         Prob > F          =     0.0011
+
+                                     (Std. Err. adjusted for 37 clusters in name)
+---------------------------------------------------------------------------------
+                |               Robust
+      recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+----------------+----------------------------------------------------------------
+high_turnover_3 |   2.139538   1.002176     2.13   0.040     .1070301    4.172046
+      revenue_3 |   .0000748   .0000693     1.08   0.288    -.0000658    .0002154
+     ceo_exit_3 |  -.6974463    2.23078    -0.31   0.756    -5.221677    3.826785
+ceo_exit_during |  -1.326178     1.8493    -0.72   0.478    -5.076733    2.424376
+     ceo_exit_1 |   1.198177   1.595225     0.75   0.457    -2.037089    4.433443
+          _cons |   -.383135   3.679231    -0.10   0.918    -7.844961    7.078691
+----------------+----------------------------------------------------------------
+        sigma_u |  5.9184271
+        sigma_e |  2.6316725
+            rho |  .83491953   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------
+
+. 
 end of do-file
 
 . log close
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- closed on:  26 Apr 2019, 00:03:41
+ closed on:  26 Apr 2019, 01:48:11
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
