@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- opened on:  26 Apr 2019, 01:48:06
+ opened on:  26 Apr 2019, 02:21:10
 
 . do "H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10. Run models.do"
 
@@ -523,11 +523,41 @@ ceo_exit_during |  -1.326178     1.8493    -0.72   0.478    -5.076733    2.42437
 ---------------------------------------------------------------------------------
 
 . 
+. xtreg recalls_3 high_turnover_3 revenue_3 ceo_exit_3 year, fe robust
+
+Fixed-effects (within) regression               Number of obs     =         71
+Group variable: name                            Number of groups  =         37
+
+R-sq:                                           Obs per group:
+     within  = 0.2478                                         min =          1
+     between = 0.4428                                         avg =        1.9
+     overall = 0.4226                                         max =          2
+
+                                                F(4,36)           =       3.08
+corr(u_i, Xb)  = 0.3106                         Prob > F          =     0.0278
+
+                                     (Std. Err. adjusted for 37 clusters in name)
+---------------------------------------------------------------------------------
+                |               Robust
+      recalls_3 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+----------------+----------------------------------------------------------------
+high_turnover_3 |    1.90663   1.131807     1.68   0.101    -.3887799    4.202041
+      revenue_3 |   .0000553    .000067     0.83   0.414    -.0000805    .0001912
+     ceo_exit_3 |    .656815   .9541243     0.69   0.496    -1.278239    2.591869
+           year |   .1763921   .2711778     0.65   0.520    -.3735819    .7263662
+          _cons |   -354.553   543.9423    -0.65   0.519    -1457.719    748.6131
+----------------+----------------------------------------------------------------
+        sigma_u |  6.3705945
+        sigma_e |  2.6090975
+            rho |  .85635953   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------
+
+. 
 end of do-file
 
 . log close
       name:  <unnamed>
        log:  H:\jbarg\PycharmProjects\corporate_disruptions\workbooks\10.Run models.log
   log type:  text
- closed on:  26 Apr 2019, 01:48:11
+ closed on:  26 Apr 2019, 02:21:14
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
